@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Выжить и не смыться</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -347,6 +348,144 @@
     box-shadow: inset 0 0 0 3px var(--frame-inner);
     z-index: 1;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  /* ============ МОБИЛЬНАЯ ВЕРСИЯ ============ */
+  @media (max-width: 600px) {
+    body {
+      font-size: 16px;
+      padding: 16px 12px;
+      max-width: 100%;
+    }
+
+    h1 {
+      font-size: 26px;
+      margin-bottom: 20px;
+      line-height: 1.4;
+    }
+    h2 {
+      font-size: 18px;
+      margin-bottom: 20px;
+    }
+    h3 {
+      font-size: 13px;
+      margin-bottom: 12px;
+      margin-top: 18px;
+    }
+
+    #toilet-showcase {
+      margin-bottom: 24px;
+    }
+    #toilet-spinner {
+      height: 180px;
+      margin-bottom: 14px;
+    }
+    .toilet-3d {
+      width: 150px;
+      height: 150px;
+    }
+    #toilet-name {
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    .toilet-nav {
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .toilet-nav button {
+      width: 60px;
+      height: 60px;
+      font-size: 20px;
+    }
+
+    .toilet-dots {
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .dot {
+      width: 18px;
+      height: 18px;
+      border-width: 3px;
+    }
+
+    button {
+      padding: 22px 18px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+      border-width: 4px;
+      box-shadow: 5px 5px 0 var(--shadow);
+    }
+
+    #scene {
+      padding: 24px 18px;
+      font-size: 14px;
+      line-height: 2.1;
+      margin-bottom: 20px;
+      border-width: 4px;
+    }
+
+    #ending {
+      font-size: 15px;
+      line-height: 2;
+      margin-bottom: 22px;
+    }
+
+    .header-row {
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .ach-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .ach-circle {
+      width: 90px;
+      height: 90px;
+      font-size: 38px;
+      border-width: 4px;
+      box-shadow: 4px 4px 0 var(--shadow);
+    }
+    .ach-label {
+      font-size: 10px;
+      line-height: 1.5;
+      max-width: 110px;
+    }
+
+    .ach-circle.legendary {
+      width: 110px;
+      height: 110px;
+      font-size: 48px;
+    }
+    .legendary-wrapper .ach-label {
+      font-size: 10px;
+    }
+
+    .corner-btn {
+      width: 60px;
+      height: 60px;
+      font-size: 26px;
+      border-width: 4px;
+    }
+    #musicBtn { top: 14px; right: 14px; }
+    #themeBtn { top: 14px; right: 82px; }
+
+    body::before {
+      border-width: 5px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    h1 { font-size: 22px; }
+    button { font-size: 13px; padding: 20px 16px; }
+    #scene { font-size: 13px; }
+    .ach-circle { width: 78px; height: 78px; font-size: 32px; }
+    .ach-circle.legendary { width: 95px; height: 95px; font-size: 42px; }
+    .toilet-3d { width: 130px; height: 130px; }
+    #toilet-spinner { height: 155px; }
   }
 </style>
 </head>
@@ -1327,8 +1466,6 @@ const storyGlam = {
       { text: '3. Постоять ещё немного и подождать, вдруг само пройдёт', next: 'wait' }
     ]
   },
-
-  /* --- Женский --- */
   zh_start: {
     text: 'Ты заходишь. Внутри — три кабинки. Первая закрыта, из-под двери торчат чьи-то ноги. Вторая — открыта, но там нет бумаги. У третьей — сорвана дверь с петель. Очередь: девушка в спортивном костюме и женщина с коляской. Ты смотришь на спортивный костюм и думаешь: «Божеее, дорогуша, что на тебе надето». Но ради приличия ты решила промолчать.',
     choices: [
@@ -1362,8 +1499,6 @@ const storyGlam = {
     achievement: 'g_boss',
     choices: []
   },
-
-  /* --- Мужской --- */
   m_start: {
     text: 'Заходишь. Внутри — три писсуара. И один мужчина у раковины. Он оборачивается и смотрит на твои каблуки, потом на розовое платье и молчит. Тишина такая, что слышно, как капает кран.',
     choices: [
@@ -1399,8 +1534,6 @@ const storyGlam = {
       { text: '2. Пойти искать другой вариант', next: 'taxi' }
     ]
   },
-
-  /* --- Постоять ещё --- */
   wait: {
     text: 'Ты стоишь. Ты ждёшь. Ты смотришь на туалет. Ты смотришь на кофе. Ты смотришь на небо. Ничего не проходит. Зов природы становится только громче. Ты вздыхаешь: «Божеее, ну и день».',
     choices: [
@@ -1409,8 +1542,6 @@ const storyGlam = {
       { text: '3. Позвонить менеджеру и вызвать такси', next: 'taxi' }
     ]
   },
-
-  /* --- Такси --- */
   taxi: {
     text: 'Тебя настолько тошнит от этого туалета, что ты не выдерживаешь и достаёшь телефон. Ты вызываешь премиум-такси. Через 4 минуты чёрный мерс уже у входа в парк. Ты садишься и властным тоном говоришь водителю: «На Патрики и побыстрее». По дороге ты смотришь в окно и думаешь: «Божеее, какой кошмар».',
     choices: [
