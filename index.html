@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Туалетный театр</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  :root {
+    --bg: #0f0f1a;
+    --panel: #1e1e30;
+    --panel-hover: #2a2a45;
+    --border: #3a3a55;
+    --text: #e8e8e8;
+    --accent: #d4af37;
+    --accent-dark: #2a2410;
+    --scene-bg: #15152a;
+    --shadow: #000;
+    --frame: #1e1e30;
+    --frame-inner: #0a0a14;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    padding: 30px 20px;
+    max-width: 720px;
+    margin: 0 auto;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  #menu, #characters, #achievements, #game {
+    display: none;
+    width: 100%;
+  }
+  #menu { display: block; }
+
+  h1 {
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 20px;
+    letter-spacing: 2px;
+    text-shadow: 3px 3px 0 var(--shadow);
+    line-height: 1.6;
+    transition: color 0.3s ease;
+  }
+  h2 {
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 14px;
+    text-shadow: 2px 2px 0 var(--shadow);
+    transition: color 0.3s ease;
+  }
+  h3 {
+    color: var(--accent);
+    font-size: 11px;
+    margin-bottom: 14px;
+    margin-top: 20px;
+    text-align: left;
+    text-shadow: 1px 1px 0 var(--shadow);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 6px;
+  }
+
+  /* ============ ВИТРИНА ТУАЛЕТОВ ============ */
+  #toilet-showcase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+  }
+
+  #toilet-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 170px;
+    perspective: 800px;
+    margin-bottom: 12px;
+  }
+
+  .toilet-3d {
+    width: 130px;
+    height: 130px;
+    animation: spin-toilet 6s linear infinite;
+    transform-style: preserve-3d;
+  }
+  @keyframes spin-toilet {
+    0%   { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+  }
+  .toilet-3d svg {
+    width: 100%;
+    height: 100%;
+    shape-rendering: crispEdges;
+    image-rendering: pixelated;
+  }
+
+  #toilet-name {
+    color: var(--accent);
+    font-size: 9px;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    text-align: center;
+    text-shadow: 2px 2px 0 var(--shadow);
+    min-height: 14px;
+    transition: color 0.3s ease;
+  }
+
+  .toilet-nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .toilet-nav button {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    margin: 0;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .toilet-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+  .dot {
+    width: 12px;
+    height: 12px;
+    background: var(--panel);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .dot:hover {
+    border-color: var(--accent);
+  }
+  .dot.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+  }
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 18px 16px;
+    margin-bottom: 14px;
+    font-size: 11px;
+    font-family: 'Press Start 2P', monospace;
+    background: var(--panel);
+    color: var(--text);
+    border: 3px solid var(--border);
+    border-radius: 0;
+    text-align: left;
+    line-height: 1.6;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    box-shadow: 4px 4px 0 var(--shadow);
+  }
+  button:hover {
+    background: var(--panel-hover);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--shadow);
+  }
+  button.disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  button.disabled:hover {
+    background: var(--panel);
+    border-color: var(--border);
+    color: var(--text);
+  }
+
+  #scene {
+    background: var(--scene-bg);
+    border: 3px solid var(--border);
+    padding: 26px 22px;
+    margin-bottom: 22px;
+    min-height: 120px;
+    font-size: 11px;
+    line-height: 2;
+    text-align: left;
+    box-shadow: 4px 4px 0 var(--shadow);
+    color: var(--text);
+    white-space: pre-wrap;
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+
+  #scene::after {
+    content: '▊';
+    color: var(--accent);
+    animation: blink 0.8s step-end infinite;
+    margin-left: 2px;
+  }
+  #scene.done::after { content: ''; }
+
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+
+  #ending {
+    color: var(--accent);
+    font-size: 12px;
+    margin-top: 20px;
+    margin-bottom: 24px;
+    text-align: center;
+    text-shadow: 2px 2px 0 var(--shadow);
+    line-height: 2;
+    transition: color 0.3s ease;
+  }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 9px;
+    color: #888;
+  }
+  .header-row span:hover { color: var(--accent); }
+
+  .ach-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+  }
+  .ach-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .ach-circle {
+    width: 72px;
+    height: 72px;
+    background: var(--panel);
+    border: 3px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: #444;
+    box-shadow: 3px 3px 0 var(--shadow);
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .ach-circle.unlocked {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-dark);
+  }
+  .ach-label {
+    font-size: 7px;
+    text-align: center;
+    color: #aaa;
+    line-height: 1.6;
+  }
+
+  .ach-circle.legendary {
+    width: 88px;
+    height: 88px;
+    font-size: 38px;
+    border-color: #ff4f4f;
+    color: #ff4f4f;
+    background: #2a0808;
+    box-shadow: 0 0 20px #ff4f4f, 4px 4px 0 var(--shadow);
+    animation: legendary-pulse 2s infinite;
+  }
+  .ach-circle.legendary.unlocked {
+    border-color: #ffd700;
+    color: #ffd700;
+    background: #2a1a00;
+    box-shadow: 0 0 30px #ffd700, 0 0 60px #ff4f4f, 4px 4px 0 var(--shadow);
+  }
+  @keyframes legendary-pulse {
+    0%, 100% { box-shadow: 0 0 20px #ff4f4f, 4px 4px 0 var(--shadow); }
+    50% { box-shadow: 0 0 40px #ff4f4f, 4px 4px 0 var(--shadow); }
+  }
+  .legendary-wrapper {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 30px;
+  }
+  .legendary-wrapper .ach-item {
+    max-width: 140px;
+  }
+  .legendary-wrapper .ach-label {
+    font-size: 8px;
+    color: #ffd700;
+    font-weight: bold;
+  }
+
+  .corner-btn {
+    position: fixed;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    margin: 0;
+    font-size: 22px;
+    text-align: center;
+    background: var(--panel);
+    border: 3px solid var(--border);
+    box-shadow: 4px 4px 0 var(--shadow);
+    z-index: 50;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  .corner-btn:hover {
+    border-color: var(--accent);
+    background: var(--panel-hover);
+  }
+  .corner-btn.off { opacity: 0.5; }
+
+  #musicBtn { top: 20px; right: 20px; }
+  #themeBtn { top: 20px; right: 90px; }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    border: 6px solid var(--frame);
+    box-shadow: inset 0 0 0 3px var(--frame-inner);
+    z-index: 1;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+</style>
+</head>
+<body>
+
+<button class="corner-btn" id="themeBtn" onclick="nextTheme()" title="Сменить тему">🎨</button>
+<button class="corner-btn off" id="musicBtn" onclick="toggleMusic()" title="Музыка">🔇</button>
+
+<div id="menu">
+  <h1>ТУАЛЕТНЫЙ<br>ТЕАТР</h1>
+
+  <!-- ВИТРИНА ТУАЛЕТОВ -->
+  <div id="toilet-showcase">
+    <div id="toilet-spinner">
+      <div class="toilet-3d" id="toilet-display">
+        <!-- SVG сюда -->
+      </div>
+    </div>
+    <div id="toilet-name">КЛАССИЧЕСКИЙ</div>
+    <div class="toilet-nav">
+      <button onclick="prevToilet()">◄</button>
+      <button onclick="nextToilet()">►</button>
+    </div>
+    <div class="toilet-dots" id="toilet-dots"></div>
+  </div>
+
+  <button onclick="showMenu('characters')">► СТАРТ</button>
+  <button onclick="showMenu('achievements')">► ДОСТИЖЕНИЯ</button>
+</div>
+
+<div id="characters">
+  <h2>ВЫБЕРИ ПЕРСОНАЖА</h2>
+  <button onclick="startGame('visitor')">1. ПОСЕТИТЕЛЬ</button>
+  <button onclick="startGame('visitor_f')">2. ПОСЕТИТЕЛЬНИЦА</button>
+  <button class="disabled">3. УБОРЩИЦА</button>
+  <button class="disabled">4. ПОЖИЛОЙ ЧЕЛОВЕК</button>
+  <button class="disabled">5. ГЛАМУРНАЯ ФИФА</button>
+  <button class="disabled">6. ИСТОРИК</button>
+  <button class="disabled">7. УЧЁНЫЙ</button>
+  <button onclick="showMenu('menu')" style="margin-top:24px;">◄ НАЗАД</button>
+</div>
+
+<div id="achievements">
+  <h2>ДОСТИЖЕНИЯ</h2>
+  <div id="ach-content"></div>
+  <button onclick="showMenu('menu')" style="margin-top:24px;">◄ НАЗАД</button>
+</div>
+
+<div id="game">
+  <div class="header-row">
+    <span onclick="showMenu('characters')">◄ ПЕРСОНАЖИ</span>
+    <span id="char-label">ПОСЕТИТЕЛЬ</span>
+  </div>
+  <div id="scene"></div>
+  <div id="ending"></div>
+  <div id="choices"></div>
+  <button id="to-menu-btn" onclick="showMenu('menu')" style="display:none; margin-top:24px;">◄ НА ГЛАВНЫЙ ЭКРАН</button>
+</div>
+
+<script>
+/* ============================================================
+   ТУАЛЕТЫ — 5 штук
+   ============================================================ */
+const toilets = [
+  {
+    name: 'КЛАССИЧЕСКИЙ',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="crispEdges">
+      <rect x="4" y="37" width="34" height="1" fill="#000" opacity="0.5"/>
+      <rect x="6" y="38" width="30" height="1" fill="#000" opacity="0.3"/>
+      <rect x="26" y="6" width="11" height="2" fill="#000"/>
+      <rect x="27" y="8" width="9" height="2" fill="#f0f0f0"/>
+      <rect x="27" y="10" width="9" height="2" fill="#e8e8e8"/>
+      <rect x="27" y="12" width="9" height="2" fill="#e0e0e0"/>
+      <rect x="27" y="14" width="9" height="2" fill="#d8d8d8"/>
+      <rect x="27" y="16" width="9" height="2" fill="#d0d0d0"/>
+      <rect x="26" y="18" width="11" height="1" fill="#000"/>
+      <rect x="30" y="4" width="4" height="1" fill="#a88820"/>
+      <rect x="30" y="5" width="4" height="1" fill="#d4af37"/>
+      <rect x="28" y="9" width="1" height="7" fill="#ffffff" opacity="0.7"/>
+      <rect x="25" y="4" width="13" height="1" fill="#000"/>
+      <rect x="26" y="5" width="11" height="1" fill="#ffffff"/>
+      <rect x="5" y="14" width="22" height="1" fill="#000"/>
+      <rect x="6" y="15" width="20" height="1" fill="#ffffff"/>
+      <rect x="6" y="16" width="20" height="1" fill="#f5f5f5"/>
+      <rect x="5" y="17" width="22" height="1" fill="#000"/>
+      <rect x="7" y="18" width="18" height="1" fill="#e8e8e8"/>
+      <rect x="8" y="19" width="16" height="1" fill="#e0e0e0"/>
+      <rect x="9" y="20" width="14" height="1" fill="#d8d8d8"/>
+      <rect x="10" y="21" width="12" height="1" fill="#d0d0d0"/>
+      <rect x="11" y="22" width="10" height="1" fill="#c8c8c8"/>
+      <rect x="13" y="23" width="7" height="1" fill="#000"/>
+      <rect x="14" y="24" width="5" height="1" fill="#c0c0c0"/>
+      <rect x="14" y="25" width="5" height="1" fill="#b8b8b8"/>
+      <rect x="13" y="26" width="7" height="1" fill="#b0b0b0"/>
+      <rect x="12" y="27" width="9" height="1" fill="#a8a8a8"/>
+      <rect x="11" y="28" width="11" height="1" fill="#a0a0a0"/>
+      <rect x="10" y="29" width="13" height="1" fill="#989898"/>
+      <rect x="9" y="30" width="15" height="1" fill="#909090"/>
+      <rect x="8" y="31" width="17" height="1" fill="#888888"/>
+      <rect x="7" y="32" width="19" height="1" fill="#808080"/>
+      <rect x="6" y="33" width="21" height="1" fill="#787878"/>
+      <rect x="5" y="34" width="23" height="1" fill="#707070"/>
+      <rect x="4" y="35" width="25" height="1" fill="#000"/>
+      <rect x="4" y="36" width="25" height="1" fill="#686868"/>
+      <rect x="20" y="17" width="6" height="1" fill="#a0a0a0"/>
+      <rect x="22" y="18" width="4" height="1" fill="#909090"/>
+      <rect x="28" y="19" width="7" height="1" fill="#c0c0c0"/>
+      <rect x="29" y="20" width="5" height="1" fill="#b8b8b8"/>
+      <rect x="30" y="21" width="3" height="1" fill="#b0b0b0"/>
+    </svg>`
+  },
+  {
+    name: 'СИНЯЯ КАБИНКА',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="crispEdges">
+      <rect x="4" y="38" width="32" height="1" fill="#000" opacity="0.5"/>
+      <rect x="8" y="4" width="24" height="1" fill="#000"/>
+      <rect x="9" y="5" width="22" height="1" fill="#4fa8e0"/>
+      <rect x="9" y="6" width="22" height="1" fill="#3a8ec8"/>
+      <rect x="9" y="7" width="22" height="1" fill="#3a8ec8"/>
+      <rect x="9" y="8" width="22" height="1" fill="#3a8ec8"/>
+      <rect x="9" y="9" width="22" height="1" fill="#3a8ec8"/>
+      <rect x="7" y="3" width="26" height="1" fill="#2a6ea8"/>
+      <rect x="8" y="4" width="24" height="1" fill="#4fa8e0"/>
+      <rect x="17" y="9" width="6" height="22" fill="#000"/>
+      <rect x="18" y="10" width="4" height="20" fill="#3a8ec8"/>
+      <rect x="19" y="11" width="2" height="18" fill="#2a6ea8"/>
+      <rect x="20" y="20" width="1" height="2" fill="#d4af37"/>
+      <rect x="12" y="6" width="4" height="2" fill="#ffffff"/>
+      <rect x="13" y="6" width="1" height="1" fill="#3a8ec8"/>
+      <rect x="14" y="7" width="1" height="1" fill="#3a8ec8"/>
+      <rect x="10" y="10" width="6" height="1" fill="#1a5e98"/>
+      <rect x="10" y="12" width="6" height="1" fill="#1a5e98"/>
+      <rect x="10" y="14" width="6" height="1" fill="#1a5e98"/>
+      <rect x="8" y="31" width="24" height="1" fill="#000"/>
+      <rect x="9" y="32" width="22" height="1" fill="#1a5e98"/>
+      <rect x="9" y="33" width="22" height="1" fill="#1a5e98"/>
+      <rect x="8" y="34" width="24" height="1" fill="#000"/>
+      <rect x="7" y="35" width="26" height="1" fill="#0a3e78"/>
+      <rect x="7" y="36" width="26" height="1" fill="#0a3e78"/>
+    </svg>`
+  },
+  {
+    name: 'ЗОЛОТОЙ ТРОН',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="crispEdges">
+      <rect x="4" y="37" width="34" height="1" fill="#000" opacity="0.5"/>
+      <rect x="24" y="2" width="13" height="1" fill="#000"/>
+      <rect x="25" y="3" width="11" height="1" fill="#d4af37"/>
+      <rect x="25" y="4" width="11" height="1" fill="#b89020"/>
+      <rect x="25" y="5" width="11" height="1" fill="#d4af37"/>
+      <rect x="25" y="6" width="11" height="1" fill="#b89020"/>
+      <rect x="27" y="0" width="1" height="2" fill="#ffd700"/>
+      <rect x="29" y="0" width="1" height="2" fill="#ffd700"/>
+      <rect x="31" y="0" width="1" height="2" fill="#ffd700"/>
+      <rect x="33" y="0" width="1" height="2" fill="#ffd700"/>
+      <rect x="27" y="1" width="7" height="1" fill="#ffd700"/>
+      <rect x="5" y="14" width="22" height="1" fill="#000"/>
+      <rect x="6" y="15" width="20" height="1" fill="#d4af37"/>
+      <rect x="6" y="16" width="20" height="1" fill="#ffd700"/>
+      <rect x="5" y="17" width="22" height="1" fill="#000"/>
+      <rect x="7" y="18" width="18" height="1" fill="#d4af37"/>
+      <rect x="8" y="19" width="16" height="1" fill="#b89020"/>
+      <rect x="9" y="20" width="14" height="1" fill="#d4af37"/>
+      <rect x="10" y="21" width="12" height="1" fill="#b89020"/>
+      <rect x="11" y="22" width="10" height="1" fill="#d4af37"/>
+      <rect x="13" y="23" width="7" height="1" fill="#000"/>
+      <rect x="14" y="24" width="5" height="1" fill="#d4af37"/>
+      <rect x="13" y="25" width="7" height="1" fill="#b89020"/>
+      <rect x="12" y="26" width="9" height="1" fill="#d4af37"/>
+      <rect x="11" y="27" width="11" height="1" fill="#b89020"/>
+      <rect x="10" y="28" width="13" height="1" fill="#d4af37"/>
+      <rect x="9" y="29" width="15" height="1" fill="#b89020"/>
+      <rect x="8" y="30" width="17" height="1" fill="#d4af37"/>
+      <rect x="7" y="31" width="19" height="1" fill="#b89020"/>
+      <rect x="6" y="32" width="21" height="1" fill="#d4af37"/>
+      <rect x="5" y="33" width="23" height="1" fill="#b89020"/>
+      <rect x="4" y="34" width="25" height="1" fill="#d4af37"/>
+      <rect x="4" y="35" width="25" height="1" fill="#000"/>
+      <rect x="28" y="4" width="1" height="2" fill="#ffffff" opacity="0.8"/>
+      <rect x="9" y="19" width="1" height="2" fill="#ffffff" opacity="0.5"/>
+      <rect x="27" y="4" width="1" height="1" fill="#ff4f4f"/>
+      <rect x="30" y="4" width="1" height="1" fill="#4fd8ff"/>
+      <rect x="33" y="4" width="1" height="1" fill="#7fff4f"/>
+    </svg>`
+  },
+  {
+    name: 'КОСМИЧЕСКИЙ',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="crispEdges">
+      <rect x="4" y="37" width="34" height="1" fill="#000" opacity="0.5"/>
+      <rect x="24" y="4" width="13" height="1" fill="#4fd8ff"/>
+      <rect x="25" y="5" width="11" height="1" fill="#0a1526"/>
+      <rect x="25" y="6" width="11" height="1" fill="#4fd8ff"/>
+      <rect x="25" y="7" width="11" height="1" fill="#0a1526"/>
+      <rect x="25" y="8" width="11" height="1" fill="#4fd8ff"/>
+      <rect x="25" y="9" width="11" height="1" fill="#0a1526"/>
+      <rect x="25" y="10" width="11" height="1" fill="#4fd8ff"/>
+      <rect x="30" y="6" width="2" height="1" fill="#7fff4f"/>
+      <rect x="30" y="8" width="2" height="1" fill="#4fd8ff"/>
+      <rect x="30" y="10" width="2" height="1" fill="#ff4f4f"/>
+      <rect x="5" y="14" width="22" height="1" fill="#4fd8ff"/>
+      <rect x="6" y="15" width="20" height="1" fill="#0a1526"/>
+      <rect x="6" y="16" width="20" height="1" fill="#4fd8ff"/>
+      <rect x="5" y="17" width="22" height="1" fill="#0a1526"/>
+      <rect x="7" y="18" width="18" height="1" fill="#4fd8ff"/>
+      <rect x="8" y="19" width="16" height="1" fill="#0a1526"/>
+      <rect x="9" y="20" width="14" height="1" fill="#4fd8ff"/>
+      <rect x="10" y="21" width="12" height="1" fill="#0a1526"/>
+      <rect x="11" y="22" width="10" height="1" fill="#4fd8ff"/>
+      <rect x="13" y="23" width="7" height="1" fill="#4fd8ff"/>
+      <rect x="14" y="24" width="5" height="1" fill="#0a1526"/>
+      <rect x="13" y="25" width="7" height="1" fill="#4fd8ff"/>
+      <rect x="12" y="26" width="9" height="1" fill="#0a1526"/>
+      <rect x="11" y="27" width="11" height="1" fill="#4fd8ff"/>
+      <rect x="10" y="28" width="13" height="1" fill="#0a1526"/>
+      <rect x="9" y="29" width="15" height="1" fill="#4fd8ff"/>
+      <rect x="8" y="30" width="17" height="1" fill="#0a1526"/>
+      <rect x="7" y="31" width="19" height="1" fill="#4fd8ff"/>
+      <rect x="6" y="32" width="21" height="1" fill="#0a1526"/>
+      <rect x="5" y="33" width="23" height="1" fill="#4fd8ff"/>
+      <rect x="4" y="34" width="25" height="1" fill="#0a1526"/>
+      <rect x="4" y="35" width="25" height="1" fill="#000"/>
+      <rect x="2" y="15" width="1" height="1" fill="#4fd8ff"/>
+      <rect x="37" y="20" width="1" height="1" fill="#4fd8ff"/>
+      <rect x="3" y="28" width="1" height="1" fill="#4fd8ff"/>
+      <rect x="36" y="10" width="1" height="1" fill="#4fd8ff"/>
+    </svg>`
+  },
+  {
+    name: 'ДЕРЕВЕНСКИЙ',
+    svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" shape-rendering="crispEdges">
+      <rect x="4" y="38" width="32" height="1" fill="#000" opacity="0.5"/>
+      <rect x="6" y="4" width="28" height="1" fill="#000"/>
+      <rect x="7" y="5" width="26" height="1" fill="#8a5a20"/>
+      <rect x="6" y="6" width="28" height="1" fill="#6a3a10"/>
+      <rect x="9" y="7" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="8" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="9" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="10" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="11" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="12" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="13" width="22" height="1" fill="#a07030"/>
+      <rect x="18" y="9" width="1" height="1" fill="#000"/>
+      <rect x="21" y="9" width="1" height="1" fill="#000"/>
+      <rect x="17" y="10" width="1" height="1" fill="#000"/>
+      <rect x="19" y="10" width="2" height="1" fill="#000"/>
+      <rect x="22" y="10" width="1" height="1" fill="#000"/>
+      <rect x="17" y="11" width="6" height="1" fill="#000"/>
+      <rect x="18" y="12" width="4" height="1" fill="#000"/>
+      <rect x="19" y="13" width="2" height="1" fill="#000"/>
+      <rect x="20" y="14" width="1" height="1" fill="#000"/>
+      <rect x="16" y="14" width="8" height="1" fill="#5a2a08"/>
+      <rect x="17" y="15" width="6" height="1" fill="#000"/>
+      <rect x="22" y="18" width="1" height="2" fill="#d4af37"/>
+      <rect x="9" y="14" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="15" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="16" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="17" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="18" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="19" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="20" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="21" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="22" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="23" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="24" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="25" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="26" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="27" width="22" height="1" fill="#a07030"/>
+      <rect x="9" y="28" width="22" height="1" fill="#8a5a20"/>
+      <rect x="9" y="29" width="22" height="1" fill="#a07030"/>
+      <rect x="8" y="30" width="24" height="1" fill="#000"/>
+      <rect x="9" y="31" width="22" height="1" fill="#5a2a08"/>
+      <rect x="8" y="32" width="24" height="1" fill="#000"/>
+      <rect x="10" y="33" width="1" height="4" fill="#4a1a00"/>
+      <rect x="29" y="33" width="1" height="4" fill="#4a1a00"/>
+      <rect x="9" y="37" width="3" height="1" fill="#000"/>
+      <rect x="28" y="37" width="3" height="1" fill="#000"/>
+    </svg>`
+  }
+];
+
+let currentToilet = 0;
+
+function showToilet(index) {
+  currentToilet = index;
+  document.getElementById('toilet-display').innerHTML = toilets[index].svg;
+  document.getElementById('toilet-name').textContent = toilets[index].name;
+  renderToiletDots();
+}
+
+function nextToilet() {
+  showToilet((currentToilet + 1) % toilets.length);
+}
+
+function prevToilet() {
+  showToilet((currentToilet - 1 + toilets.length) % toilets.length);
+}
+
+function renderToiletDots() {
+  const container = document.getElementById('toilet-dots');
+  container.innerHTML = '';
+  toilets.forEach(function(_, i) {
+    const dot = document.createElement('div');
+    dot.className = 'dot' + (i === currentToilet ? ' active' : '');
+    dot.onclick = function() { showToilet(i); };
+    container.appendChild(dot);
+  });
+}
+
+/* ============================================================
+   КУРСОРЫ
+   ============================================================ */
+function arrowSvg(c) {
+  var r = '';
+  var pixels = [
+    [0,0],[0,1],[1,1],[0,2],[1,2],[2,2],[0,3],[1,3],[2,3],[3,3],
+    [0,4],[1,4],[2,4],[3,4],[4,4],[0,5],[1,5],[2,5],[3,5],[4,5],[5,5],
+    [0,6],[1,6],[2,6],[3,6],[4,6],[5,6],[6,6],[0,7],[1,7],[2,7],[3,7],[4,7],[5,7],[6,7],[7,7],
+    [0,8],[1,8],[2,8],[3,8],[4,8],[5,8],[1,9],[3,9],[5,9]
+  ];
+  pixels.forEach(function(p) {
+    r += '<rect x="' + p[0] + '" y="' + p[1] + '" width="1" height="1" fill="%23' + c + '"/>';
+  });
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">' + r + '</svg>';
+}
+
+function handSvg(c, o, l) {
+  var r = '';
+  var outline = [
+    [7,0],[8,0],[6,1],[9,1],[6,2],[9,2],[6,3],[9,3],[6,4],[9,4],[6,5],[9,5],
+    [5,6],[6,6],[9,6],[10,6],[4,7],[5,7],[10,7],[11,7],
+    [4,8],[5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[11,8],
+    [4,9],[5,9],[6,9],[7,9],[8,9],[9,9],[10,9],[11,9],
+    [4,10],[5,10],[6,10],[7,10],[8,10],[9,10],[10,10],[11,10],
+    [4,11],[5,11],[6,11],[7,11],[8,11],[9,11],[10,11],[11,11],
+    [5,12],[6,12],[7,12],[8,12],[9,12],[10,12],
+    [5,13],[6,13],[7,13],[8,13],[9,13],[10,13],
+    [6,14],[7,14],[8,14],[9,14],[6,15],[7,15],[8,15],[9,15]
+  ];
+  var body = [
+    [7,1],[8,1],[7,2],[8,2],[7,3],[8,3],[7,4],[8,4],[7,5],[8,5],
+    [6,6],[7,6],[8,6],[9,6],[5,7],[6,7],[7,7],[8,7],[9,7],[10,7],
+    [5,8],[6,8],[7,8],[8,8],[9,8],[10,8],[5,9],[6,9],[7,9],[8,9],[9,9],[10,9],
+    [5,10],[6,10],[7,10],[8,10],[9,10],[10,10],[5,11],[6,11],[7,11],[8,11],[9,11],[10,11],
+    [6,12],[7,12],[8,12],[9,12],[6,13],[7,13],[8,13],[9,13],
+    [7,14],[8,14],[7,15],[8,15]
+  ];
+  var highlight = [[7,1],[7,2],[7,3],[7,4],[7,5]];
+  outline.forEach(function(p) {
+    r += '<rect x="' + p[0] + '" y="' + p[1] + '" width="1" height="1" fill="%23' + o + '"/>';
+  });
+  body.forEach(function(p) {
+    r += '<rect x="' + p[0] + '" y="' + p[1] + '" width="1" height="1" fill="%23' + c + '"/>';
+  });
+  highlight.forEach(function(p) {
+    r += '<rect x="' + p[0] + '" y="' + p[1] + '" width="1" height="1" fill="%23' + l + '"/>';
+  });
+  return '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 16 16" shape-rendering="crispEdges">' + r + '</svg>';
+}
+
+function updateCursorStyle(accentHex, lightHex, darkHex) {
+  var arrow = arrowSvg(accentHex);
+  var hand = handSvg(accentHex, darkHex, lightHex);
+  var css =
+    'body { cursor: url(\'data:image/svg+xml;utf8,' + arrow + '\') 0 0, auto; }\n' +
+    'button, a, span[onclick], .clickable, .corner-btn, #choices button, .header-row span, .dot { cursor: url(\'data:image/svg+xml;utf8,' + hand + '\') 7 0, pointer; }\n';
+  var el = document.getElementById('cursor-style');
+  if (!el) {
+    el = document.createElement('style');
+    el.id = 'cursor-style';
+    document.head.appendChild(el);
+  }
+  el.textContent = css;
+}
+
+/* ============================================================
+   ТЕМЫ
+   ============================================================ */
+const themes = [
+  {
+    name: 'Золото',
+    cursor: 'd4af37', cursorLight: 'fff8c0', cursorDark: '1a1408',
+    vars: {
+      '--bg': '#0f0f1a', '--panel': '#1e1e30', '--panel-hover': '#2a2a45',
+      '--border': '#3a3a55', '--text': '#e8e8e8', '--accent': '#d4af37',
+      '--accent-dark': '#2a2410', '--scene-bg': '#15152a',
+      '--shadow': '#000', '--frame': '#1e1e30', '--frame-inner': '#0a0a14'
+    }
+  },
+  {
+    name: 'Неон-розовый',
+    cursor: 'ff4fd8', cursorLight: 'ffe0f8', cursorDark: '2a0a26',
+    vars: {
+      '--bg': '#1a0a1e', '--panel': '#2a1030', '--panel-hover': '#3d1645',
+      '--border': '#5a2560', '--text': '#f5d0f0', '--accent': '#ff4fd8',
+      '--accent-dark': '#3a0a35', '--scene-bg': '#200a26',
+      '--shadow': '#000', '--frame': '#2a1030', '--frame-inner': '#12040a'
+    }
+  },
+  {
+    name: 'Кислотный лайм',
+    cursor: '7fff4f', cursorLight: 'f0ffe0', cursorDark: '0a2008',
+    vars: {
+      '--bg': '#0a1a0a', '--panel': '#102a10', '--panel-hover': '#164518',
+      '--border': '#256028', '--text': '#d0f5d5', '--accent': '#7fff4f',
+      '--accent-dark': '#0a3a0a', '--scene-bg': '#0a200a',
+      '--shadow': '#000', '--frame': '#102a10', '--frame-inner': '#040a04'
+    }
+  },
+  {
+    name: 'Кибер-синий',
+    cursor: '4fd8ff', cursorLight: 'e8f8ff', cursorDark: '081c28',
+    vars: {
+      '--bg': '#0a0f1e', '--panel': '#101c30', '--panel-hover': '#162a45',
+      '--border': '#255060', '--text': '#d0e8f5', '--accent': '#4fd8ff',
+      '--accent-dark': '#0a2a3a', '--scene-bg': '#0a1526',
+      '--shadow': '#000', '--frame': '#101c30', '--frame-inner': '#040812'
+    }
+  },
+  {
+    name: 'Кровавый',
+    cursor: 'ff4f4f', cursorLight: 'ffe0e0', cursorDark: '2a0808',
+    vars: {
+      '--bg': '#1a0a0a', '--panel': '#2a1010', '--panel-hover': '#451616',
+      '--border': '#602525', '--text': '#f5d0d0', '--accent': '#ff4f4f',
+      '--accent-dark': '#3a0a0a', '--scene-bg': '#200a0a',
+      '--shadow': '#000', '--frame': '#2a1010', '--frame-inner': '#120404'
+    }
+  },
+  {
+    name: 'Фиолет',
+    cursor: 'b44fff', cursorLight: 'f0e0ff', cursorDark: '1a0828',
+    vars: {
+      '--bg': '#100a1e', '--panel': '#1e1030', '--panel-hover': '#2a1645',
+      '--border': '#402560', '--text': '#e0d0f5', '--accent': '#b44fff',
+      '--accent-dark': '#2a0a3a', '--scene-bg': '#160a26',
+      '--shadow': '#000', '--frame': '#1e1030', '--frame-inner': '#080412'
+    }
+  },
+  {
+    name: 'Оранжевый закат',
+    cursor: 'ff954f', cursorLight: 'fff0e0', cursorDark: '281005',
+    vars: {
+      '--bg': '#1a100a', '--panel': '#2a1a10', '--panel-hover': '#452a16',
+      '--border': '#603825', '--text': '#f5e0d0', '--accent': '#ff954f',
+      '--accent-dark': '#3a1a0a', '--scene-bg': '#20160a',
+      '--shadow': '#000', '--frame': '#2a1a10', '--frame-inner': '#120804'
+    }
+  },
+  {
+    name: 'Бирюза',
+    cursor: '4fffd8', cursorLight: 'e0fff8', cursorDark: '082a24',
+    vars: {
+      '--bg': '#0a1a1a', '--panel': '#102a2a', '--panel-hover': '#164545',
+      '--border': '#256060', '--text': '#d0f5f5', '--accent': '#4fffd8',
+      '--accent-dark': '#0a3a3a', '--scene-bg': '#0a2020',
+      '--shadow': '#000', '--frame': '#102a2a', '--frame-inner': '#040a0a'
+    }
+  },
+  {
+    name: 'Матрица',
+    cursor: '00ff41', cursorLight: 'a0ffa0', cursorDark: '002000',
+    vars: {
+      '--bg': '#000000', '--panel': '#0a140a', '--panel-hover': '#0f1f0f',
+      '--border': '#1e3a1e', '--text': '#80ff80', '--accent': '#00ff41',
+      '--accent-dark': '#002a00', '--scene-bg': '#050a05',
+      '--shadow': '#000', '--frame': '#0a140a', '--frame-inner': '#000000'
+    }
+  },
+  {
+    name: 'Бумага',
+    cursor: '8a6a20', cursorLight: 'fff5d0', cursorDark: '3a2a10',
+    vars: {
+      '--bg': '#f5f0e0', '--panel': '#e8e0c8', '--panel-hover': '#d8d0b8',
+      '--border': '#a89878', '--text': '#2a2418', '--accent': '#8a6a20',
+      '--accent-dark': '#e8d8a0', '--scene-bg': '#efe8d0',
+      '--shadow': '#5a4a30', '--frame': '#e8e0c8', '--frame-inner': '#c8b898'
+    }
+  }
+];
+
+let currentTheme = parseInt(localStorage.getItem('tt_theme') || '0');
+
+function applyTheme(index) {
+  const theme = themes[index];
+  const root = document.documentElement;
+  Object.keys(theme.vars).forEach(function(key) {
+    root.style.setProperty(key, theme.vars[key]);
+  });
+  updateCursorStyle(theme.cursor, theme.cursorLight, theme.cursorDark);
+  localStorage.setItem('tt_theme', index);
+  currentTheme = index;
+}
+
+function nextTheme() {
+  const next = (currentTheme + 1) % themes.length;
+  applyTheme(next);
+}
+
+/* ============================================================
+   ЗВУК ПЕЧАТИ
+   ============================================================ */
+let typeCtx = null;
+
+function playTypeSound() {
+  try {
+    if (!typeCtx) typeCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = typeCtx.createOscillator();
+    const gain = typeCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = 900 + Math.random() * 200;
+    gain.gain.setValueAtTime(0.015, typeCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, typeCtx.currentTime + 0.03);
+    osc.connect(gain);
+    gain.connect(typeCtx.destination);
+    osc.start();
+    osc.stop(typeCtx.currentTime + 0.03);
+  } catch(e) {}
+}
+
+/* ============================================================
+   МУЗЫКА
+   ============================================================ */
+let musicCtx = null;
+let musicPlaying = false;
+let musicOscillators = [];
+let musicLoopInterval = null;
+
+function toggleMusic() {
+  const btn = document.getElementById('musicBtn');
+  if (!musicPlaying) {
+    startMusic();
+    btn.classList.remove('off');
+    btn.textContent = '🎵';
+    musicPlaying = true;
+  } else {
+    stopMusic();
+    btn.classList.add('off');
+    btn.textContent = '🔇';
+    musicPlaying = false;
+  }
+}
+
+function startMusic() {
+  if (!musicCtx) musicCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const notes = [
+    { f: 261.63, d: 0.2 }, { f: 329.63, d: 0.2 }, { f: 392.00, d: 0.2 },
+    { f: 523.25, d: 0.4 }, { f: 392.00, d: 0.2 }, { f: 329.63, d: 0.2 },
+    { f: 261.63, d: 0.4 }, { f: 293.66, d: 0.2 }, { f: 349.23, d: 0.2 },
+    { f: 440.00, d: 0.4 }, { f: 349.23, d: 0.2 }, { f: 293.66, d: 0.2 },
+    { f: 261.63, d: 0.6 }
+  ];
+  const tempo = 1.6;
+  function scheduleLoop() {
+    if (!musicCtx) return;
+    let time = musicCtx.currentTime + 0.05;
+    notes.forEach(function(n) {
+      const osc = musicCtx.createOscillator();
+      const gain = musicCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.value = n.f;
+      gain.gain.setValueAtTime(0.035, time);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + n.d * tempo * 0.9);
+      osc.connect(gain);
+      gain.connect(musicCtx.destination);
+      osc.start(time);
+      osc.stop(time + n.d * tempo);
+      musicOscillators.push(osc);
+      time += n.d * tempo;
+    });
+  }
+  scheduleLoop();
+  const totalDur = notes.reduce(function(s, n) { return s + n.d * tempo; }, 0) * 1000;
+  musicLoopInterval = setInterval(function() {
+    if (musicPlaying && musicCtx) scheduleLoop();
+  }, totalDur);
+}
+
+function stopMusic() {
+  musicOscillators.forEach(function(osc) {
+    try { osc.stop(); } catch(e) {}
+  });
+  musicOscillators = [];
+  if (musicLoopInterval) {
+    clearInterval(musicLoopInterval);
+    musicLoopInterval = null;
+  }
+  if (musicCtx) {
+    musicCtx.close();
+    musicCtx = null;
+  }
+}
+
+let musicAutoStarted = false;
+function tryAutoStartMusic() {
+  if (musicAutoStarted) return;
+  musicAutoStarted = true;
+  startMusic();
+  musicPlaying = true;
+  const btn = document.getElementById('musicBtn');
+  btn.classList.remove('off');
+  btn.textContent = '🎵';
+}
+
+['click', 'keydown', 'touchstart'].forEach(function(evt) {
+  document.addEventListener(evt, tryAutoStartMusic, { once: true });
+});
+
+/* ============================================================
+   ДОСТИЖЕНИЯ
+   ============================================================ */
+const achievementGroups = [
+  {
+    charId: 'legendary',
+    title: '🏆 ЛЕГЕНДАРНОЕ',
+    legendary: true,
+    items: [
+      { id: 'legend_all', icon: '👑', label: 'Собрать все достижения у всех персонажей' }
+    ]
+  },
+  {
+    charId: 'visitor',
+    title: 'ПОСЕТИТЕЛЬ',
+    items: [
+      { id: 'v_uspeh',       icon: '🚽', label: 'Успел в туалет' },
+      { id: 'v_obossalsya',  icon: '💦', label: 'Обоссался' },
+      { id: 'v_sumki',       icon: '👜', label: 'Забит сумками' },
+      { id: 'v_kus',         icon: '🌳', label: 'Кусты' },
+      { id: 'v_coffee',      icon: '☕', label: 'Кофе за туалет' },
+      { id: 'v_manager',     icon: '🧑‍💼', label: 'Договорился' },
+      { id: 'v_guard',       icon: '💂', label: 'Охрана' },
+      { id: 'v_kneel',       icon: '🙏', label: 'На коленях' },
+      { id: 'v_invalid',     icon: '♿', label: 'Туалет для инвалидов' }
+    ]
+  },
+  {
+    charId: 'visitor_f',
+    title: 'ПОСЕТИТЕЛЬНИЦА',
+    items: [
+      { id: 'f_queue_win',   icon: '👑', label: 'Победительница очереди' },
+      { id: 'f_queue_fail',  icon: '😤', label: 'Выгнали из очереди' },
+      { id: 'f_man_win',     icon: '🚹', label: 'Прошла по-своему' },
+      { id: 'f_mop',         icon: '🧹', label: 'Выгнана шваброй' },
+      { id: 'f_nothing',     icon: '🚪', label: 'Ушла ни с чем' }
+    ]
+  }
+];
+
+let unlockedAchievements = JSON.parse(localStorage.getItem('tt_ach') || '[]');
+
+function getAllAchievementIds() {
+  var ids = [];
+  achievementGroups.forEach(function(g) {
+    if (g.legendary) return;
+    g.items.forEach(function(it) { ids.push(it.id); });
+  });
+  return ids;
+}
+
+function checkLegendary() {
+  var all = getAllAchievementIds();
+  var got = all.every(function(id) { return unlockedAchievements.indexOf(id) !== -1; });
+  if (got && unlockedAchievements.indexOf('legend_all') === -1) {
+    unlockedAchievements.push('legend_all');
+    localStorage.setItem('tt_ach', JSON.stringify(unlockedAchievements));
+  }
+}
+
+function renderAchievements() {
+  var container = document.getElementById('ach-content');
+  container.innerHTML = '';
+  achievementGroups.forEach(function(group) {
+    if (group.legendary) {
+      var wrapper = document.createElement('div');
+      wrapper.className = 'legendary-wrapper';
+      group.items.forEach(function(a) {
+        var unlocked = unlockedAchievements.indexOf(a.id) !== -1;
+        var item = document.createElement('div');
+        item.className = 'ach-item';
+        item.innerHTML =
+          '<div class="ach-circle legendary ' + (unlocked ? 'unlocked' : '') + '">' + a.icon + '</div>' +
+          '<div class="ach-label">' + a.label + '</div>';
+        wrapper.appendChild(item);
+      });
+      container.appendChild(wrapper);
+    } else {
+      var h = document.createElement('h3');
+      h.textContent = group.title;
+      container.appendChild(h);
+      var grid = document.createElement('div');
+      grid.className = 'ach-grid';
+      group.items.forEach(function(a) {
+        var unlocked = unlockedAchievements.indexOf(a.id) !== -1;
+        var item = document.createElement('div');
+        item.className = 'ach-item';
+        item.innerHTML =
+          '<div class="ach-circle ' + (unlocked ? 'unlocked' : '') + '">' + a.icon + '</div>' +
+          '<div class="ach-label">' + a.label + '</div>';
+        grid.appendChild(item);
+      });
+      container.appendChild(grid);
+    }
+  });
+}
+
+function unlockAchievement(id) {
+  if (unlockedAchievements.indexOf(id) === -1) {
+    unlockedAchievements.push(id);
+    localStorage.setItem('tt_ach', JSON.stringify(unlockedAchievements));
+    checkLegendary();
+  }
+}
+
+/* ============================================================
+   НАВИГАЦИЯ
+   ============================================================ */
+function showMenu(name) {
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('characters').style.display = 'none';
+  document.getElementById('achievements').style.display = 'none';
+  document.getElementById('game').style.display = 'none';
+  document.getElementById(name).style.display = 'block';
+  if (name === 'achievements') renderAchievements();
+}
+
+/* ============================================================
+   СЮЖЕТ
+   ============================================================ */
+
+/* -------- ПОСЕТИТЕЛЬ -------- */
+const storyVisitor = {
+  start: {
+    text: 'Прогуливаясь по парку, ты внезапно ощущаешь зов природы. Не просто зов — а настойчивый звонок с угрозами. И тут, словно мираж в пустыне, перед тобой возникает ОН — УЛИЧНЫЙ ТУАЛЕТ. Три двери. Три судьбы. Одна надежда...',
+    choices: [
+      { text: '1. Войти в мужской туалет', next: 'm1' },
+      { text: '2. Войти в женский туалет', next: 'zh1' },
+      { text: '3. Поискать другой вариант', next: 'p1' }
+    ]
+  },
+  m1: {
+    text: 'Упс! Увы, кабинки все заняты, а твой мочевой пузырь уже трещит по швам.',
+    choices: [
+      { text: '1. Ждать кабинку', next: 'm2' },
+      { text: '2. Попробовать писсуар', next: 'm_pisuar' },
+      { text: '3. Довериться природе и искать туалет в кустах', next: 'm_kus' }
+    ]
+  },
+  m2: {
+    text: 'Проходит пять минут, ни одна из дверей не открывается. Ты подходишь к одной из дверей. Из-за неё доносится подозрительное молчание...',
+    choices: [
+      { text: '1. Постучать', next: 'm3' },
+      { text: '2. Уйти и поискать другой вариант', next: 'p1' },
+      { text: '3. Заглянуть в щель', next: 'm_shel' }
+    ]
+  },
+  m3: {
+    text: 'Из кабинки раздаётся голос: «Занято, имейте совесть!» Ты слышишь, как внутри кто-то шуршит газетой. Похоже, там обосновались надолго. Терпение на пределе.',
+    choices: [
+      { text: '1. Ждать дальше', next: 'm_wait_end' },
+      { text: '2. Развернуться и поискать другой вариант', next: 'p1' },
+      { text: '3. Ответить грубо', next: 'm_fight' }
+    ]
+  },
+  m_fight: {
+    text: 'Дверь резко открывается. Из кабинки выходит мужчина с очень серьёзным лицом. Начинается конфликт. Тебя выводят из туалета. И тут — всё. Ты не добежал.',
+    ending: 'КОНЦОВКА. «ОБОССАЛСЯ»',
+    achievement: 'v_obossalsya',
+    choices: []
+  },
+  m_wait_end: {
+    text: 'Через десять минут кабинка наконец освобождается. Ты заходишь. Наконец-то.',
+    ending: 'КОНЦОВКА. «УСПЕЛ В ТУАЛЕТ»',
+    achievement: 'v_uspeh',
+    choices: []
+  },
+  m_shel: {
+    text: 'Ты наклоняешься. Из щели на тебя смотрит чей-то глаз. Тебя замечают. Дверь резко открывается. Тебя выводят. И тут — всё. Ты не добежал.',
+    ending: 'КОНЦОВКА. «ОБОССАЛСЯ»',
+    achievement: 'v_obossalsya',
+    choices: []
+  },
+  m_pisuar: {
+    text: 'Ты подходишь к писсуару. Но организм категорически против. Он требует кабинку. Ты выходишь ни с чем. И тут — всё. Ты не добежал.',
+    ending: 'КОНЦОВКА. «ОБОССАЛСЯ»',
+    achievement: 'v_obossalsya',
+    choices: []
+  },
+  m_kus: {
+    text: 'Ты выходишь из туалета и идёшь в сторону кустов. Замечаешь, что за тобой наблюдает белка. Она явно всё понимает.',
+    choices: [
+      { text: '1. Игнорировать белку и продолжить', next: 'm_kus_ohrana' },
+      { text: '2. Найти место подальше', next: 'm_kus_dal' },
+      { text: '3. Вернуться к туалету', next: 'm_kus_back' }
+    ]
+  },
+  m_kus_ohrana: {
+    text: 'Ты находишь уединённое место. Но тут из-за кустов выходит охранник парка. У него в руках рация. Тебя выводят. И тут — всё. Ты не добежал.',
+    ending: 'КОНЦОВКА. «ОБОССАЛСЯ» (ЖЁСТКАЯ ВЕРСИЯ)',
+    achievement: 'v_obossalsya',
+    choices: []
+  },
+  m_kus_dal: {
+    text: 'Ты уходишь глубже в парк. Находишь укромный уголок. Но слышишь шаги. Кто-то идёт. Терпение на пределе.',
+    choices: [
+      { text: '1. Затаиться', next: 'm_kus_end' },
+      { text: '2. Уйти ещё дальше', next: 'm_kus_far' },
+      { text: '3. Вернуться к туалету', next: 'm_kus_back' }
+    ]
+  },
+  m_kus_end: {
+    text: 'Шаги проходят мимо. Ты один. Ты спускаешь штаны и расслабляешься.',
+    ending: 'КОНЦОВКА. «УСПЕЛ В ТУАЛЕТ»',
+    achievement: 'v_kus',
+    choices: []
+  },
+  m_kus_far: {
+    text: 'Ты заходишь в самую глубь парка. Там никого. Но тут — всё. Ты не добежал.',
+    ending: 'КОНЦОВКА. «ОБОССАЛСЯ»',
+    achievement: 'v_obossalsya',
+    choices: []
+  },
+  m_kus_back: {
+    text: 'Ты возвращаешься. В мужском туалете освободилась кабинка. Ты заходишь.',
+    ending: 'КОНЦОВКА. «УСПЕЛ В ТУАЛЕТ»',
+    achievement: 'v_uspeh',
+    choices: []
+  },
+  zh1: {
+    text: 'Женщины оборачиваются: «Мужчина, у вас глаза есть?? Это женский туалет».',
+    choices: [
+      { text: '1. «Ой, я ошибся дверью»', next: 'zh_err' },
+      { text: '2. «Мне очень нужно, извините»', next: 'zh_need' },
+      { text: '3. Молча идти к кабинке', next: 'zh_silent' }
+    ]
+  },
+  zh_err: {
+    text: 'Женщина с большой сумкой делает шаг назад, но не бьёт. Пока. «Выходите немедленно», — говорит она.',
+    choices: [
+      { text: '1. Выйти и поискать другой вариант', next: 'zh_out_ispug' },
+      { text: '2. Объяснить', next: 'zh_need' },
+      { text: '3. Остаться', next: 'zh_stay' }
+    ]
+  },
+  zh_out_ispug: {
+    text: 'Ты выходишь. Слышишь за спиной: «Ещё раз зайдёшь — больше не выйдешь». Испуганный, ты идёшь искать другой вариант.',
+    next: 'p1',
+    choices: []
+  },
+  zh_stay: {
+    text: 'Женщины переглядываются. Одна из них медленно замахивается сумкой в твою сторону.',
+    choices: [
+      { text: '1. Увернуться', next: 'zh_dodge' },
+      { text: '2. Закрыться руками', next: 'zh_block' },
+      { text: '3. Кричать «Помогите!»', next: 'zh_scream' }
+    ]
+  },
+  zh_need: {
+    text: '«Тогда идите в мужской!» — женщина с сумкой замахивается.',
+    choices: [
+      { text: '1. Увернуться', next: 'zh_dodge' },
+      { text: '2. Закрыться руками', next: 'zh_block' },
+      { text: '3. Кричать «Помогите!»', next: 'zh_scream' }
+    ]
+  },
+  zh_silent: {
+    text: 'Женщина с сумкой бьёт тебя сумкой по спине. Две другие подхватывают. Тебя выбивают из туалета. И тут — всё. Ты не добежал.',
+    ending: 'КОНЦОВКА. «ЗАБИТ СУМКАМИ, НО НЕ СЛОМЛЕН»',
+    achievement: 'v_sumki',
+    choices: []
+  },
+  zh_dodge: {
+    text: 'Сумка попадает в стену. Женщины кричат. Одна из них хватает швабру.',
+    choices: [
+      { text: '1. Выйти и поискать другой вариант', next: 'zh_out_ispug' },
+      { text: '2. Извиниться', next: 'zh_sorry' },
+      { text: '3. Позвать охрану', next: 'zh_guard' }
+    ]
+  },
+  zh_block: {
+    text: 'Тебя бьют по рукам. Больно, но ты цел. Терпение на пределе.',
+    choices: [
+      { text: '1. Выйти и поискать другой вариант', next: 'zh_out_ispug' },
+      { text: '2. Упасть на колени', next: 'zh_kneel' },
+      { text: '3. Сказать «Я не маньяк»', next: 'zh_sorry' }
+    ]
+  },
+  zh_scream: {
+    text: 'Забегает охранник. Женщины останавливаются. Сумка замирает в воздухе.',
+    choices: [
+      { text: '1. Объяснить', next: 'zh_explain' },
+      { text: '2. Выйти и поискать другой вариант', next: 'zh_out_ispug' },
+      { text: '3. Пожаловаться', next: 'zh_guard' }
+    ]
+  },
+  zh_sorry: {
+    text: 'Женщины смягчаются. Одна говорит: «Ладно, иди уже».',
+    choices: [
+      { text: '1. Зайти в кабинку', next: 'zh_cabin' },
+      { text: '2. Выйти и поискать другой вариант', next: 'zh_out_ispug' },
+      { text: '3. Поблагодарить', next: 'zh_cabin' }
+    ]
+  },
+  zh_kneel: {
+    text: 'Женщины останавливаются. Одна говорит: «Ладно, иди уже».',
+    achievement: 'v_kneel',
+    choices: [
+      { text: '1. Зайти в кабинку', next: 'zh_cabin' },
+      { text: '2. Выйти и поискать другой вариант', next: 'zh_out_ispug' },
+      { text: '3. Поблагодарить', next: 'zh_cabin' }
+    ]
+  },
+  zh_cabin: {
+    text: 'Ты в кабинке. Стук. «Вы там надолго?» Ты выходишь под взглядами.',
+    ending: 'КОНЦОВКА. «УСПЕЛ В ТУАЛЕТ» (СМЯГЧЁННАЯ)',
+    achievement: 'v_uspeh',
+    choices: []
+  },
+  zh_guard: {
+    text: 'Охранник выслушивает. Женщины недовольны, но отходят.',
+    achievement: 'v_guard',
+    choices: [
+      { text: '1. Попросить туалет для инвалидов', next: 'zh_invalid' },
+      { text: '2. Выйти и поискать другой вариант', next: 'zh_out_ispug' },
+      { text: '3. В мужской', next: 'm1' }
+    ]
+  },
+  zh_explain: {
+    text: 'Охранник выслушивает. Женщины недовольны, но отходят.',
+    achievement: 'v_guard',
+    choices: [
+      { text: '1. Попросить туалет для инвалидов', next: 'zh_invalid' },
+      { text: '2. Выйти и поискать другой вариант', next: 'zh_out_ispug' },
+      { text: '3. В мужской', next: 'm1' }
+    ]
+  },
+  zh_invalid: {
+    text: 'Охранник показывает туалет для инвалидов. Ты доходишь.',
+    ending: 'КОНЦОВКА. «УСПЕЛ В ТУАЛЕТ»',
+    achievement: 'v_invalid',
+    choices: []
+  },
+  p1: {
+    text: 'Ты выходишь из парка. Вокруг одни улицы. Ближайший туалет — за три квартала. Терпение на пределе.',
+    choices: [
+      { text: '1. Идти', next: 'p_walk' },
+      { text: '2. Зайти в кафе', next: 'p_cafe' },
+      { text: '3. Вернуться к уличному туалету', next: 'p_back' }
+    ]
+  },
+  p_walk: {
+    text: 'Ты доходишь. Туалет закрыт на ремонт. И тут — всё. Ты не добежал.',
+    ending: 'КОНЦОВКА. «ОБОССАЛСЯ»',
+    achievement: 'v_obossalsya',
+    choices: []
+  },
+  p_cafe: {
+    text: 'Официант: «Туалет только для гостей».',
+    choices: [
+      { text: '1. Купить кофе', next: 'p_coffee' },
+      { text: '2. Уйти', next: 'p_leave' },
+      { text: '3. Спросить менеджера', next: 'p_manager' }
+    ]
+  },
+  p_coffee: {
+    text: 'Ты в туалете. Свободно. Наконец-то.',
+    ending: 'КОНЦОВКА. «УСПЕЛ В ТУАЛЕТ»',
+    achievement: 'v_coffee',
+    choices: []
+  },
+  p_leave: {
+    text: 'Ты выходишь из кафе. На улице всё так же холодно. Терпение на пределе.',
+    choices: [
+      { text: '1. Идти дальше', next: 'p_walk' },
+      { text: '2. Вернуться к уличному туалету', next: 'p_back' },
+      { text: '3. Искать другой вариант', next: 'p_walk' }
+    ]
+  },
+  p_manager: {
+    text: 'Менеджер разрешает без покупки.',
+    achievement: 'v_manager',
+    choices: [
+      { text: '1. Зайти', next: 'p_end_ok' },
+      { text: '2. Поблагодарить', next: 'p_end_ok' },
+      { text: '3. Уйти', next: 'p_leave' }
+    ]
+  },
+  p_end_ok: {
+    text: 'Ты в туалете. Свободно. Наконец-то.',
+    ending: 'КОНЦОВКА. «УСПЕЛ В ТУАЛЕТ»',
+    achievement: 'v_uspeh',
+    choices: []
+  },
+  p_back: {
+    text: 'Очередь в женский стала ещё длиннее. Мужской по-прежнему занят. Терпение на пределе.',
+    choices: [
+      { text: '1. Встать в очередь', next: 'p_queue' },
+      { text: '2. Пойти в мужской', next: 'm1' },
+      { text: '3. Искать другой вариант', next: 'p_walk' }
+    ]
+  },
+  p_queue: {
+    text: 'Ты стоишь. Очередь не двигается. И тут — всё. Ты не добежал.',
+    ending: 'КОНЦОВКА. «ОБОССАЛСЯ»',
+    achievement: 'v_obossalsya',
+    choices: []
+  }
+};
+
+/* -------- ПОСЕТИТЕЛЬНИЦА -------- */
+const storyVisitorF = {
+  start: {
+    text: 'Ты гуляешь по парку, слушаешь музыку в наушниках и внезапно ощущаешь зов природы. Не просто зов — а настойчивый звонок с угрозами. И тут, словно мираж в пустыне, перед тобой возникает ОН — УЛИЧНЫЙ ТУАЛЕТ. Три двери. Три судьбы. Одна надежда...',
+    choices: [
+      { text: '1. Женский туалет', next: 'zh_start' },
+      { text: '2. Мужской туалет', next: 'm_start' },
+      { text: '3. Техническая дверь', next: 't_start' }
+    ]
+  },
+  zh_start: {
+    text: 'Заходишь. Очередь из десяти человек. Одна девушка впереди листает тиктоки, вторая красит губы перед зеркалом, третья просто стоит и смотрит в стену. Обычная женская очередь. Но ты не в настроении ждать.',
+    choices: [
+      { text: '1. Встать в очередь и терпеть', next: 'zh_wait' },
+      { text: '2. Попросить пропустить — «очень-очень надо»', next: 'zh_ask' },
+      { text: '3. Выйти и попробовать другой вариант', next: 'after_queue_out' }
+    ]
+  },
+  zh_wait: {
+    text: 'Стоишь. Проходит две минуты. Очередь не двигается. Проходит ещё пять. Одна из девушек выходит и говорит: «Там бумаги нет». Очередь вздыхает хором.',
+    choices: [
+      { text: '1. Дождаться своей очереди', next: 'zh_wait_end' },
+      { text: '2. Попросить пропустить', next: 'zh_ask_inside' },
+      { text: '3. Сбежать', next: 't_start' }
+    ]
+  },
+  zh_wait_end: {
+    text: 'Ты доходишь до кабинки. Внутри — пусто. Ни бумаги, ни крючка, ни замка. Зато есть надпись на стене: «Здесь была Оля, 2019». Ты справляешься. Выходишь с чувством выполненного долга.',
+    ending: 'КОНЦОВКА. «ПОБЕДИТЕЛЬНИЦА ОЧЕРЕДИ»',
+    achievement: 'f_queue_win',
+    choices: []
+  },
+  zh_ask: {
+    text: 'Очередь подозрительно молчит. Одна девушка говорит: «Мы все тут не просто так стоим». Атмосфера накаляется.',
+    choices: [
+      { text: '1. Извиниться', next: 'zh_apologize' },
+      { text: '2. Настаивать', next: 'zh_insist' },
+      { text: '3. Уйти', next: 't_start' }
+    ]
+  },
+  zh_ask_inside: {
+    text: 'Девушка с тиктоком поднимает глаза: «Я тут двадцать минут стою, может, тебе ещё ключи от квартиры дать?» Очередь осуждающе смотрит.',
+    choices: [
+      { text: '1. Извиниться и ждать', next: 'zh_apologize' },
+      { text: '2. Настаивать', next: 'zh_insist' },
+      { text: '3. Уйти', next: 't_start' }
+    ]
+  },
+  zh_apologize: {
+    text: 'Встаёшь в конец очереди. Ждёшь. Доходишь. Справляешься.',
+    ending: 'КОНЦОВКА. «ПОБЕДИТЕЛЬНИЦА ОЧЕРЕДИ»',
+    achievement: 'f_queue_win',
+    choices: []
+  },
+  zh_insist: {
+    text: 'Очередь объединяется против тебя, все начинают гневно фыркать. Одна из них говорит: «Девушка, выйдите». Ты выходишь.',
+    ending: 'КОНЦОВКА. «ВЫГНАЛИ ИЗ ОЧЕРЕДИ»',
+    achievement: 'f_queue_fail',
+    choices: []
+  },
+  after_queue_out: {
+    text: 'Ты выходишь из женской очереди. Перед тобой — мужской туалет и техническая дверь.',
+    choices: [
+      { text: '1. Мужской туалет', next: 'm_start' },
+      { text: '2. Техническая дверь', next: 't_start' },
+      { text: '3. Вернуться в женский', next: 'zh_start' }
+    ]
+  },
+  m_start: {
+    text: 'Заходишь. Внутри — два мужика. Один у писсуара, второй стоит у раковины и залипает в телефон. Ты замираешь. Все замирают. Тишина.',
+    choices: [
+      { text: '1. Сделать вид, что ты ошиблась', next: 'm_err' },
+      { text: '2. Сказать «я быстро» и пойти к кабинке', next: 'm_fast' },
+      { text: '3. Медленно выйти', next: 'm_slow' }
+    ]
+  },
+  m_err: {
+    text: 'Мужик у раковины отрывается от телефона и громко фыркает: «Ага, ошиблась». Ты выходишь.',
+    choices: [
+      { text: '1. Женский туалет', next: 'zh_start' },
+      { text: '2. Техническая дверь', next: 't_start' }
+    ]
+  },
+  m_fast: {
+    text: 'Оба мужика переглядываются. Один молча выходит. Второй говорит: «Ок». Ты заходишь в кабинку. Дверь не закрывается.',
+    choices: [
+      { text: '1. Справиться с открытой дверью', next: 'm_win1' },
+      { text: '2. Придержать дверь ногой', next: 'm_win2' },
+      { text: '3. Сдаться и уйти', next: 't_start' }
+    ]
+  },
+  m_win1: {
+    text: 'Ты справляешься. Дверь открыта, но все уже ушли. Выходишь победительницей.',
+    ending: 'КОНЦОВКА. «ПРОШЛА ПО-СВОЕМУ»',
+    achievement: 'f_man_win',
+    choices: []
+  },
+  m_win2: {
+    text: 'Нога затекает. Ты справляешься, но с трудом. Выходишь.',
+    ending: 'КОНЦОВКА. «ПРОШЛА ПО-СВОЕМУ»',
+    achievement: 'f_man_win',
+    choices: []
+  },
+  m_slow: {
+    text: 'Выходишь. Никто не сказал ни слова. Ты опять стоишь перед выбором.',
+    choices: [
+      { text: '1. Женский туалет', next: 'zh_start' },
+      { text: '2. Техническая дверь', next: 't_start' }
+    ]
+  },
+  t_start: {
+    text: 'Ты открываешь техническую дверь. Внутри — маленькая комнатка. Швабра, ведро, стопка бумаги, крючок, даже освежитель воздуха. И унитаз. Один. Никем не занят. Всё как надо. Кроме одной детали — на кнопке смыва красуется надпись «НЕ РАБОТАЕТ».',
+    choices: [
+      { text: '1. Воспользоваться ситуацией — смыв не главное', next: 't_use' },
+      { text: '2. Закрыть дверь и уйти', next: 'zh_start' },
+      { text: '3. Позвать уборщицу', next: 't_cleaner' }
+    ]
+  },
+  t_use: {
+    text: 'Ты заходишь. Унитаз чистый, бумага есть, замок работает. Всё идеально. Кроме смыва. Ты справляешься, встаёшь и понимаешь: смыть нечем. Ты выходишь. И тут же натыкаешься на уборщицу с шваброй. Она заглядывает внутрь. Молча берёт швабру. И с криком «Я ТОЛЬКО ЧТО ПОМЫЛА!» выгоняет тебя из технической комнаты.',
+    ending: 'КОНЦОВКА. «ВЫГНАНА ШВАБРОЙ»',
+    achievement: 'f_mop',
+    choices: []
+  },
+  t_cleaner: {
+    text: 'Из-за угла появляется уборщица с ведром. Она смотрит на тебя очень внимательно и говорит: «Тут не для посетителей». Ты объясняешь ситуацию. Она злостно фыркает и уже намеревается тебя выгнать.',
+    choices: [
+      { text: '1. Всё равно зайти и справиться без смыва', next: 't_use_anyway' },
+      { text: '2. Поблагодарить и уйти', next: 't_leave' }
+    ]
+  },
+  t_use_anyway: {
+    text: 'Ты проскальзываешь мимо уборщицы. Она не успевает ничего сказать. Ты заходишь. Делаешь дело. Смыть не получается — кнопка мертва. Ты выходишь. Уборщица стоит рядом. Молча смотрит на тебя. Потом молча заходит внутрь. Через секунду оттуда раздаётся очень громкий, очень усталый вздох.',
+    ending: 'КОНЦОВКА. «ВЫГНАНА ШВАБРОЙ»',
+    achievement: 'f_mop',
+    choices: []
+  },
+  t_leave: {
+    text: 'Ты извиняешься и выходишь. Уборщица провожает тебя взглядом. Ты опять стоишь перед выбором.',
+    choices: [
+      { text: '1. Женский туалет', next: 'zh_start' },
+      { text: '2. Мужской туалет', next: 'm_start' }
+    ]
+  }
+};
+
+/* ============================================================
+   ЛОГИКА ИГРЫ
+   ============================================================ */
+let typeTimer = null;
+let currentFullText = '';
+let currentCallback = null;
+let isTyping = false;
+let currentStory = null;
+
+const charLabels = {
+  visitor: 'ПОСЕТИТЕЛЬ',
+  visitor_f: 'ПОСЕТИТЕЛЬНИЦА'
+};
+
+function startGame(charId) {
+  if (charId === 'visitor') {
+    currentStory = storyVisitor;
+  } else if (charId === 'visitor_f') {
+    currentStory = storyVisitorF;
+  } else {
+    return;
+  }
+  document.getElementById('char-label').textContent = charLabels[charId];
+  showMenu('game');
+  showNode('start');
+}
+
+function typeText(el, text, callback) {
+  if (typeTimer) clearInterval(typeTimer);
+  el.textContent = '';
+  el.classList.remove('done');
+  currentFullText = text;
+  currentCallback = callback;
+  isTyping = true;
+  let i = 0;
+  const speed = 25;
+  typeTimer = setInterval(function() {
+    if (i < text.length) {
+      el.textContent += text.charAt(i);
+      if (text.charAt(i) !== ' ') playTypeSound();
+      i++;
+    } else {
+      clearInterval(typeTimer);
+      typeTimer = null;
+      isTyping = false;
+      el.classList.add('done');
+      if (callback) {
+        const cb = callback;
+        currentCallback = null;
+        cb();
+      }
+    }
+  }, speed);
+}
+
+function finishTyping() {
+  if (!isTyping) return;
+  const el = document.getElementById('scene');
+  if (typeTimer) clearInterval(typeTimer);
+  typeTimer = null;
+  isTyping = false;
+  el.textContent = currentFullText;
+  el.classList.add('done');
+  if (currentCallback) {
+    const cb = currentCallback;
+    currentCallback = null;
+    cb();
+  }
+}
+
+function showNode(key) {
+  const node = currentStory[key];
+  if (!node) return;
+  if (node.achievement) unlockAchievement(node.achievement);
+  const sceneEl = document.getElementById('scene');
+  const endingEl = document.getElementById('ending');
+  const choicesEl = document.getElementById('choices');
+  const toMenuBtn = document.getElementById('to-menu-btn');
+  endingEl.textContent = '';
+  choicesEl.innerHTML = '';
+  toMenuBtn.style.display = 'none';
+  typeText(sceneEl, node.text, function() {
+    if (node.ending) {
+      endingEl.textContent = node.ending;
+      toMenuBtn.style.display = 'block';
+      return;
+    }
+    if (node.next) {
+      const btn = document.createElement('button');
+      btn.textContent = '► ПРОДОЛЖИТЬ';
+      btn.onclick = function() { showNode(node.next); };
+      choicesEl.appendChild(btn);
+      return;
+    }
+    node.choices.forEach(function(choice) {
+      const btn = document.createElement('button');
+      btn.textContent = choice.text;
+      btn.onclick = function() { showNode(choice.next); };
+      choicesEl.appendChild(btn);
+    });
+  });
+}
+
+document.addEventListener('click', function(e) {
+  if (!isTyping) return;
+  if (e.target.closest('button')) return;
+  finishTyping();
+}, true);
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+applyTheme(currentTheme);
+showToilet(0);
+renderAchievements();
+</script>
+</body>
+</html>
