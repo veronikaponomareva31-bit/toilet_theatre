@@ -31,7 +31,7 @@
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 12px;
     line-height: 1.8;
-    padding: 30px 20px;
+    padding: 90px 20px 30px 20px;
     max-width: 720px;
     margin: 0 auto;
     transition: background 0.3s ease, color 0.3s ease;
@@ -312,8 +312,10 @@
     font-weight: bold;
   }
 
+  /* ============ КНОПКИ В УГЛУ ============ */
   .corner-btn {
     position: fixed;
+    top: 12px;
     width: 56px;
     height: 56px;
     padding: 0;
@@ -336,8 +338,8 @@
   }
   .corner-btn.off { opacity: 0.5; }
 
-  #musicBtn { top: 20px; right: 20px; }
-  #themeBtn { top: 20px; right: 90px; }
+  #musicBtn { right: 20px; }
+  #themeBtn { right: 90px; }
 
   body::before {
     content: '';
@@ -354,7 +356,7 @@
   @media (max-width: 600px) {
     body {
       font-size: 16px;
-      padding: 16px 12px;
+      padding: 90px 12px 16px 12px;
       max-width: 100%;
     }
 
@@ -470,8 +472,8 @@
       font-size: 26px;
       border-width: 4px;
     }
-    #musicBtn { top: 14px; right: 14px; }
-    #themeBtn { top: 14px; right: 82px; }
+    #musicBtn { right: 14px; }
+    #themeBtn { right: 82px; }
 
     body::before {
       border-width: 5px;
