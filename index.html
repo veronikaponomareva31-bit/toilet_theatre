@@ -312,7 +312,6 @@
     font-weight: bold;
   }
 
-  /* ============ КНОПКИ В УГЛУ ============ */
   .corner-btn {
     position: fixed;
     top: 12px;
@@ -352,7 +351,6 @@
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
   }
 
-  /* ============ МОБИЛЬНАЯ ВЕРСИЯ ============ */
   @media (max-width: 600px) {
     body {
       font-size: 16px;
@@ -360,56 +358,20 @@
       max-width: 100%;
     }
 
-    h1 {
-      font-size: 26px;
-      margin-bottom: 20px;
-      line-height: 1.4;
-    }
-    h2 {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-    h3 {
-      font-size: 13px;
-      margin-bottom: 12px;
-      margin-top: 18px;
-    }
+    h1 { font-size: 26px; margin-bottom: 20px; line-height: 1.4; }
+    h2 { font-size: 18px; margin-bottom: 20px; }
+    h3 { font-size: 13px; margin-bottom: 12px; margin-top: 18px; }
 
-    #toilet-showcase {
-      margin-bottom: 24px;
-    }
-    #toilet-spinner {
-      height: 180px;
-      margin-bottom: 14px;
-    }
-    .toilet-3d {
-      width: 150px;
-      height: 150px;
-    }
-    #toilet-name {
-      font-size: 13px;
-      margin-bottom: 16px;
-    }
+    #toilet-showcase { margin-bottom: 24px; }
+    #toilet-spinner { height: 180px; margin-bottom: 14px; }
+    .toilet-3d { width: 150px; height: 150px; }
+    #toilet-name { font-size: 13px; margin-bottom: 16px; }
 
-    .toilet-nav {
-      gap: 16px;
-      margin-bottom: 14px;
-    }
-    .toilet-nav button {
-      width: 60px;
-      height: 60px;
-      font-size: 20px;
-    }
+    .toilet-nav { gap: 16px; margin-bottom: 14px; }
+    .toilet-nav button { width: 60px; height: 60px; font-size: 20px; }
 
-    .toilet-dots {
-      gap: 12px;
-      margin-bottom: 24px;
-    }
-    .dot {
-      width: 18px;
-      height: 18px;
-      border-width: 3px;
-    }
+    .toilet-dots { gap: 12px; margin-bottom: 24px; }
+    .dot { width: 18px; height: 18px; border-width: 3px; }
 
     button {
       padding: 22px 18px;
@@ -428,56 +390,21 @@
       border-width: 4px;
     }
 
-    #ending {
-      font-size: 15px;
-      line-height: 2;
-      margin-bottom: 22px;
-    }
+    #ending { font-size: 15px; line-height: 2; margin-bottom: 22px; }
+    .header-row { font-size: 12px; margin-bottom: 16px; }
 
-    .header-row {
-      font-size: 12px;
-      margin-bottom: 16px;
-    }
+    .ach-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; }
+    .ach-circle { width: 90px; height: 90px; font-size: 38px; border-width: 4px; box-shadow: 4px 4px 0 var(--shadow); }
+    .ach-label { font-size: 10px; line-height: 1.5; max-width: 110px; }
 
-    .ach-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .ach-circle {
-      width: 90px;
-      height: 90px;
-      font-size: 38px;
-      border-width: 4px;
-      box-shadow: 4px 4px 0 var(--shadow);
-    }
-    .ach-label {
-      font-size: 10px;
-      line-height: 1.5;
-      max-width: 110px;
-    }
+    .ach-circle.legendary { width: 110px; height: 110px; font-size: 48px; }
+    .legendary-wrapper .ach-label { font-size: 10px; }
 
-    .ach-circle.legendary {
-      width: 110px;
-      height: 110px;
-      font-size: 48px;
-    }
-    .legendary-wrapper .ach-label {
-      font-size: 10px;
-    }
-
-    .corner-btn {
-      width: 60px;
-      height: 60px;
-      font-size: 26px;
-      border-width: 4px;
-    }
+    .corner-btn { width: 60px; height: 60px; font-size: 26px; border-width: 4px; }
     #musicBtn { right: 14px; }
     #themeBtn { right: 82px; }
 
-    body::before {
-      border-width: 5px;
-    }
+    body::before { border-width: 5px; }
   }
 
   @media (max-width: 380px) {
@@ -519,8 +446,8 @@
   <h2>ВЫБЕРИ ПЕРСОНАЖА</h2>
   <button onclick="startGame('visitor')">1. ПОСЕТИТЕЛЬ</button>
   <button onclick="startGame('visitor_f')">2. ПОСЕТИТЕЛЬНИЦА</button>
-  <button class="disabled">3. УБОРЩИЦА</button>
-  <button class="disabled">4. ПОЖИЛОЙ ЧЕЛОВЕК</button>
+  <button onclick="startGame('cleaner')">3. УБОРЩИЦА</button>
+  <button onclick="startGame('dog')">4. СОБАКА</button>
   <button onclick="startGame('glam')">5. ГЛАМУРНАЯ ФИФА</button>
   <button class="disabled">6. ИСТОРИК</button>
   <button class="disabled">7. УЧЁНЫЙ</button>
@@ -1071,6 +998,28 @@ const achievementGroups = [
       { id: 'g_throne',  icon: '🚽', label: 'Золотой трон' },
       { id: 'g_saved',   icon: '☕', label: 'Герллл, я спаслась' }
     ]
+  },
+  {
+    charId: 'cleaner',
+    title: 'УБОРЩИЦА',
+    items: [
+      { id: 'c_master',  icon: '🥋', label: 'Мастер швабры' },
+      { id: 'c_karate',  icon: '🧹', label: 'Каратэ-уборщица' },
+      { id: 'c_hozyayka', icon: '🔒', label: 'Хозяйка' },
+      { id: 'c_nauchila', icon: '📚', label: 'Научила' },
+      { id: 'c_zakon',   icon: '📞', label: 'По закону' }
+    ]
+  },
+  {
+    charId: 'dog',
+    title: 'СОБАКА',
+    items: [
+      { id: 'd_pobeda',  icon: '🐕', label: 'Гав-гав, победа' },
+      { id: 'd_fu',      icon: '🐾', label: 'Гав-гав, фу' },
+      { id: 'd_uspel',   icon: '🦴', label: 'Гав-гав, успел' },
+      { id: 'd_svoboda', icon: '🌳', label: 'Гав-гав, свобода' },
+      { id: 'd_ladno',   icon: '💤', label: 'Гааав, ну и ладно' }
+    ]
   }
 ];
 
@@ -1566,6 +1515,162 @@ const storyGlam = {
 };
 
 /* ============================================================
+   СЮЖЕТ — УБОРЩИЦА
+   ============================================================ */
+const storyCleaner = {
+  start: {
+    text: 'Тебе шестьдесят два года, и тридцать из них ты провела в этом парке со шваброй в руках. Ведро, тряпка и швабра — всё, что нужно для работы. Женский туалет только что вымыт до блеска. Ты вышла покурить и увидела, как к дверям приближается очередной посетитель. Грязный, наглый, и по лицу видно — плевать он хотел на чужой труд.',
+    choices: [
+      { text: '1. Встать у двери и следить, чтобы никто не намусорил', next: 'door' },
+      { text: '2. Зайти внутрь и найти того, кто уже напачкал', next: 'inside' },
+      { text: '3. Пойти в мужской туалет — там опять что-то сломали', next: 'men' }
+    ]
+  },
+  door: {
+    text: 'Ты встаёшь у входа со шваброй. Мимо проходит девушка в спортивном костюме, заходит внутрь и оставляет за собой цепочку грязных следов на только что вымытом полу. Пальцы сжимаются на ручке швабры сильнее, чем следовало бы.',
+    choices: [
+      { text: '1. Сделать замечание', next: 'door_remark' },
+      { text: '2. Молча достать швабру и встать в стойку', next: 'door_stance' },
+      { text: '3. Закрыть туалет на уборку', next: 'door_close' }
+    ]
+  },
+  door_remark: {
+    text: 'Твой голос звучит резко и сухо: «Девушка, вытрите ноги, тут только что было помыто». Она закатывает глаза и идёт дальше, будто это её не касается. Тогда швабра медленно поднимается, ноги встают в стойку. Ты подпрыгиваешь вверх со шваброй, и твоя нога пролетает мимо головы девушки. Нарушительница побеждена.',
+    ending: 'КОНЦОВКА. «МАСТЕР ШВАБРЫ»',
+    achievement: 'c_master',
+    choices: []
+  },
+  door_stance: {
+    text: 'Ни слова не сказано. Швабра берётся обеими руками, как катана, ноги встают на ширину плеч, спина выпрямляется. Девушка смотрит на это молчаливое приглашение к порядку, оценивает взгляд напротив и решает, что лучше выйти и вытереть кроссовки. Швабра возвращается на место.',
+    ending: 'КОНЦОВКА. «ВОСПИТАЛА»',
+    achievement: 'c_master',
+    choices: []
+  },
+  door_close: {
+    text: 'На двери появляется табличка «ЗАКРЫТО НА УБОРКУ», и дальше начинается привычная работа: пол, кабинки, зеркала, ручки, крючки. Через час всё блестит так, что недовольные посетители снаружи уже не имеют значения — здесь хозяйка ты, и это видно по каждому углу.',
+    ending: 'КОНЦОВКА. «ХОЗЯЙКА»',
+    achievement: 'c_hozyayka',
+    choices: []
+  },
+  inside: {
+    text: 'Внутри картина привычная: в первой кабинке разбросана бумага, на бачке второй кто-то оставил недопитый кофе, а на стене третьей красуется свежая надпись маркером. Швабра сжимается сама собой. Через минуту на улице находится и автор — шестнадцатилетний пацан с маркером в руке.',
+    choices: [
+      { text: '1. Достать швабру и применить каратэ', next: 'inside_karate' },
+      { text: '2. Отвести его к родителям', next: 'inside_parents' },
+      { text: '3. Заставить убрать всё самому', next: 'inside_clean' }
+    ]
+  },
+  inside_karate: {
+    text: 'Швабра поднимается, корпус делает короткий выпад — и пацан, не успев ничего сообразить, бросает маркер и исчезает за поворотом. Догонять его никто не собирается. Смысл был не в том, чтобы поймать, а в том, чтобы запомнил.',
+    ending: 'КОНЦОВКА. «КАРАТЭ-УБОРЩИЦА»',
+    achievement: 'c_karate',
+    choices: []
+  },
+  inside_parents: {
+    text: 'Ухо пацана оказывается крепко зажато между двумя пальцами, и вся дорога через парк превращается в молчаливый позор. Мама открывает дверь, слушает короткий рассказ про испорченную стену и краснеет. Пацан тоже краснеет. Больше вопросов не задаётся, и разговор на этом закончен.',
+    ending: 'КОНЦОВКА. «ПРИВЕЛА ДОМОЙ И НАКАЗАЛА»',
+    achievement: 'c_nauchila',
+    choices: []
+  },
+  inside_clean: {
+    text: 'В руки пацану вручается тряпка, и первая попытка отказаться разбивается о молчаливую стойку со шваброй. Через десять минут надпись оттёрта, кофе выкинут, бумага собрана. Урок усвоен без лишних слов.',
+    ending: 'КОНЦОВКА. «НАУЧИЛА»',
+    achievement: 'c_nauchila',
+    choices: []
+  },
+  men: {
+    text: 'В мужском туалете привычная картина: сломанный кран заливает пол, а трое посетителей стоят и смотрят на лужу, будто она сама исчезнет. Ведро ставится на пол, кран перекрывается одним движением руки, и только после этого все оборачиваются.',
+    choices: [
+      { text: '1. Выгнать всех и убрать', next: 'men_out' },
+      { text: '2. Пожаловаться начальству', next: 'men_boss' }
+    ]
+  },
+  men_out: {
+    text: '«Все на выход» звучит так, что никто не спорит. Последний посетитель делает шаг к двери, но останавливается — и тогда швабра медленно поднимается. Этого хватает. Пол вымыт, кран починен, через час здесь снова блестит всё, что должно блестеть.',
+    ending: 'КОНЦОВКА. «ПОРЯДОК»',
+    achievement: 'c_hozyayka',
+    choices: []
+  },
+  men_boss: {
+    text: 'Разговор с начальством короткий: сломанный кран, залитый пол, отсутствие реакции. Обещание «разберёмся» звучит вяло, но через неделю кран действительно чинят. Своё дело сделано, и это главное.',
+    ending: 'КОНЦОВКА. «ПО ЗАКОНУ»',
+    achievement: 'c_zakon',
+    choices: []
+  }
+};
+
+/* ============================================================
+   СЮЖЕТ — СОБАКА
+   ============================================================ */
+const storyDog = {
+  start: {
+    text: 'Ты — бигль. Небольшая собака, с очень глупым выражением морды. Тебя выгуливают в парке. Хозяин отвернулся — залипает в телефон. А ты внезапно чувствуешь: пора. Не просто пора — а пора СРОЧНО. Ты тянешь поводок к кустам, но хозяин не двигается. Тогда ты видишь его. Уличный туалет. Вход открыт. И там пахнет… интересно.',
+    choices: [
+      { text: '1. Гав-гав-гааав!', next: 'run' },
+      { text: '2. Гавгав, гааав!', next: 'sit' },
+      { text: '3. Гааав…', next: 'bush' }
+    ]
+  },
+  run: {
+    text: 'Гав-гав-гааав! Ты рвёшь с места, поводок натягивается, хозяин спотыкается, телефон летит в лужу. Ты уже у двери. Внутри две кабинки: одна пахнет страшно, вторая — очень интересно.',
+    choices: [
+      { text: '1. Гавгав!', next: 'run_first' },
+      { text: '2. Гааав-гав!', next: 'run_second' }
+    ]
+  },
+  run_first: {
+    text: 'Гав. Ты заходишь. Там пахнет хлоркой и чьими-то носками. Ты чихаешь. Ты вылетаешь оттуда как пуля. Гав-гав.',
+    ending: 'КОНЦОВКА. «ГАВ-ГАВ, ФУ»',
+    achievement: 'd_fu',
+    choices: []
+  },
+  run_second: {
+    text: 'Гааав-гав! Ты заходишь. Там пахнет чем-то невероятным. Ты крутишься на месте три раза, садишься и делаешь своё дело с максимальным достоинством. Гав.',
+    ending: 'КОНЦОВКА. «ГАВ-ГАВ, ПОБЕДА»',
+    achievement: 'd_pobeda',
+    choices: []
+  },
+  sit: {
+    text: 'Гавгав, гааав! Ты садишься. Ты смотришь на хозяина. Хозяин не отрывается от телефона. Ты вздыхаешь по-собачьи. Гав.',
+    choices: [
+      { text: '1. Гав-гав-гааав!', next: 'sit_bark' },
+      { text: '2. Гааав…', next: 'sit_wait' }
+    ]
+  },
+  sit_bark: {
+    text: 'Гав-гав-гааав! Ты гавкаешь. Хозяин подпрыгивает, оглядывается, видит твои глаза и всё понимает. Он берёт тебя на руки и несёт к туалету. Гав.',
+    ending: 'КОНЦОВКА. «ГАВ-ГАВ, УСПЕЛ»',
+    achievement: 'd_uspel',
+    choices: []
+  },
+  sit_wait: {
+    text: 'Гааав… Ты сидишь. Ты ждёшь. Хозяин всё ещё в телефоне. Ты смотришь в небо. Ты думаешь о жизни. Гав.',
+    ending: 'КОНЦОВКА. «ГАААВ, НУ И ЛАДНО»',
+    achievement: 'd_ladno',
+    choices: []
+  },
+  bush: {
+    text: 'Гааав… Ты делаешь вид, что просто нюхаешь траву. Никто ничего не замечает. Ты отходишь всё дальше. Гав.',
+    choices: [
+      { text: '1. Гав-гав!', next: 'bush_go' },
+      { text: '2. Гав…', next: 'bush_back' }
+    ]
+  },
+  bush_go: {
+    text: 'Гав-гав! Ты делаешь своё дело за кустом. Хозяин наконец отрывается от телефона, оглядывается и зовёт тебя. Ты выходишь с чувством выполненного долга. Гав.',
+    ending: 'КОНЦОВКА. «ГАВ-ГАВ, СВОБОДА»',
+    achievement: 'd_svoboda',
+    choices: []
+  },
+  bush_back: {
+    text: 'Гав… Ты возвращаешься к хозяину. Ты садишься. Ты снова смотришь на него. Он снова в телефоне. Гав.',
+    ending: 'КОНЦОВКА. «ГАААВ, ЧТО ЖЕ ДЕЛАТЬ»',
+    achievement: 'd_ladno',
+    choices: []
+  }
+};
+
+/* ============================================================
    ЛОГИКА ИГРЫ
    ============================================================ */
 let typeTimer = null;
@@ -1577,7 +1682,9 @@ let currentStory = null;
 const charLabels = {
   visitor: 'ПОСЕТИТЕЛЬ',
   visitor_f: 'ПОСЕТИТЕЛЬНИЦА',
-  glam: 'ГЛАМУРНАЯ ФИФА'
+  glam: 'ГЛАМУРНАЯ ФИФА',
+  cleaner: 'УБОРЩИЦА',
+  dog: 'СОБАКА'
 };
 
 function startGame(charId) {
@@ -1587,6 +1694,10 @@ function startGame(charId) {
     currentStory = storyVisitorF;
   } else if (charId === 'glam') {
     currentStory = storyGlam;
+  } else if (charId === 'cleaner') {
+    currentStory = storyCleaner;
+  } else if (charId === 'dog') {
+    currentStory = storyDog;
   } else {
     return;
   }
