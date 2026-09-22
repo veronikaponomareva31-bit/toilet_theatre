@@ -314,11 +314,10 @@
     font-weight: bold;
   }
 
-  /* ============ ЧАРОДЕЙСКИЕ АЧИВКИ (по персонажам) ============ */
   .char-complete-wrapper {
     grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 12px;
     margin-bottom: 30px;
     padding: 16px 8px;
@@ -329,9 +328,9 @@
     gap: 6px;
   }
   .ach-circle.char-complete {
-    width: 60px;
-    height: 60px;
-    font-size: 26px;
+    width: 56px;
+    height: 56px;
+    font-size: 24px;
     border-color: #ffd700;
     color: #8a6a20;
     background: #1a1508;
@@ -510,7 +509,7 @@
   <button onclick="startGame('cleaner')">3. УБОРЩИЦА</button>
   <button onclick="startGame('dog')">4. СОБАКА</button>
   <button onclick="startGame('glam')">5. ГЛАМУРНАЯ ФИФА</button>
-  <button class="disabled">6. ИСТОРИК</button>
+  <button onclick="startGame('historian')">6. ИСТОРИК</button>
   <button class="disabled">7. УЧЁНЫЙ</button>
   <button onclick="showMenu('menu')" style="margin-top:24px;">◄ НАЗАД</button>
 </div>
@@ -1203,16 +1202,27 @@ const achievementGroups = [
       { id: 'd_svoboda', icon: '🌳', label: 'Гав-гав, свобода' },
       { id: 'd_ladno',   icon: '💤', label: 'Гааав, ну и ладно' }
     ]
+  },
+  {
+    charId: 'historian',
+    title: 'ИСТОРИК',
+    items: [
+      { id: 'h_bred',     icon: '🛁', label: 'Бред сумасшедшего' },
+      { id: 'h_oborvali', icon: '🤐', label: 'Оборвали' },
+      { id: 'h_zatknuli', icon: '✋', label: 'Заткнули' },
+      { id: 'h_znatok',   icon: '📜', label: 'Знаток' },
+      { id: 'h_lekcia',   icon: '🏛️', label: 'Лекция' }
+    ]
   }
 ];
 
-/* Ачивки-мастера по каждому персонажу (для "собрать все" по персонажу) */
 const charCompleteAchievements = [
   { id: 'cc_visitor',    icon: '🚽', label: 'Все ачивки Посетителя',      groupId: 'visitor' },
   { id: 'cc_visitor_f',  icon: '🚺', label: 'Все ачивки Посетительницы',  groupId: 'visitor_f' },
   { id: 'cc_glam',       icon: '💄', label: 'Все ачивки Гламурной фифы',  groupId: 'glam' },
   { id: 'cc_cleaner',    icon: '🧹', label: 'Все ачивки Уборщицы',        groupId: 'cleaner' },
-  { id: 'cc_dog',        icon: '🐕', label: 'Все ачивки Собаки',          groupId: 'dog' }
+  { id: 'cc_dog',        icon: '🐕', label: 'Все ачивки Собаки',          groupId: 'dog' },
+  { id: 'cc_historian',  icon: '📜', label: 'Все ачивки Историка',        groupId: 'historian' }
 ];
 
 let unlockedAchievements = JSON.parse(localStorage.getItem('tt_ach') || '[]');
@@ -1248,7 +1258,6 @@ function checkCharComplete() {
 }
 
 function checkLegendary() {
-  // легендарная — все обычные ачивки персонажей (без cc_* и без legend_all)
   var all = getAllAchievementIds();
   var got = all.every(function(id) { return unlockedAchievements.indexOf(id) !== -1; });
   if (got && unlockedAchievements.indexOf('legend_all') === -1) {
@@ -1261,7 +1270,6 @@ function renderAchievements() {
   var container = document.getElementById('ach-content');
   container.innerHTML = '';
 
-  // 1. Легендарная ачивка (сверху)
   achievementGroups.forEach(function(group) {
     if (group.legendary) {
       var wrapper = document.createElement('div');
@@ -1279,7 +1287,6 @@ function renderAchievements() {
     }
   });
 
-  // 2. Ачивки-мастера по персонажам (ниже легендарной)
   var completeBlock = document.createElement('div');
   completeBlock.className = 'char-complete-wrapper';
 
@@ -1299,7 +1306,6 @@ function renderAchievements() {
   });
   container.appendChild(completeBlock);
 
-  // 3. Все обычные группы ачивок
   achievementGroups.forEach(function(group) {
     if (group.legendary) return;
     var h = document.createElement('h3');
@@ -1912,6 +1918,57 @@ const storyDog = {
 };
 
 /* ============================================================
+   СЮЖЕТ — ИСТОРИК
+   ============================================================ */
+const storyHistorian = {
+  start: {
+    text: 'Ты — историк. Стоишь в очереди в мужской туалет. Перед тобой ещё два человека. За тобой — никого. Идеальное время, чтобы рассказать кому-нибудь про историю туалетов. Ты оборачиваешься. Сзади никого. Ты оглядываешься ещё раз. Мимо идёт парень в наушниках. Ты уже открываешь рот.',
+    choices: [
+      { text: '1. Рассказать парню в наушниках про Древний Рим', next: 'rome' },
+      { text: '2. Рассказать очереди про Клоаку Максиму', next: 'cloaca' }
+    ]
+  },
+  rome: {
+    text: 'Ты начинаешь: «А вы знали, что в Древнем Риме роскошь похода в туалет была доступна лишь избранным? Состоятельные патриции отправляли рабов вперед, чтобы те прогревали холодные мраморные сиденья к приходу хозяина». Парень в наушниках кивает в такт музыке. Он тебя не слышит. Ты продолжаешь громче.',
+    choices: [
+      { text: '1. Рассказать ещё подробнее про рабов и мрамор', next: 'rome_more' },
+      { text: '2. Перейти к Клоаке Максиме', next: 'cloaca_from_rome' }
+    ]
+  },
+  rome_more: {
+    text: 'Ты входишь в раж и уже начинаешь привирать: «И знаете, что самое интересное? Рабы не просто садились на сиденье — они должны были сидеть там ровно столько, сколько нужно, чтобы мрамор нагрелся до температуры тела. А ещё у них был специальный массаж... и они пели... и им платили золотом... и один такой раб стал сенатором... и ещё был случай...» Парень в наушниках уже давно ушёл. Ты говоришь сам с собой.',
+    ending: 'КОНЦОВКА. «БРЕД СУМАСШЕДШЕГО»',
+    achievement: 'h_bred',
+    choices: []
+  },
+  cloaca_from_rome: {
+    text: 'Ты перескакиваешь: «А вот Клоака Максима — это вообще отдельная история. В VI веке до н.э. в Риме построили канализацию, которая работала больше двух тысяч лет. Сиденья туалетов размещались прямо над проточным потоком: вода постоянно смывала всё, что падало вниз. К I веку н.э. население Рима выросло до миллиона человек, а Клоака Максима оставалась самой совершенной канализационной системой в мире». Мужчина впереди тебя оборачивается и говорит: «Слушай, ты можешь помолчать?»',
+    ending: 'КОНЦОВКА. «ОБОРВАЛИ»',
+    achievement: 'h_oborvali',
+    choices: []
+  },
+  cloaca: {
+    text: 'Ты начинаешь: «Кстати, о туалетах. Вы знали, что в Древнем Риме была канализация, которая работала две тысячи лет? Она называлась Клоака Максима». Мужчина впереди тебя кивает. Ты воодушевляешься. Ты чувствуешь, что тебя слушают. Ты продолжаешь.',
+    choices: [
+      { text: '1. Продолжить рассказ про поток воды и миллион жителей', next: 'cloaca_flow' },
+      { text: '2. Добавить историю про прогрев сидений', next: 'cloaca_heat' }
+    ]
+  },
+  cloaca_flow: {
+    text: 'Ты разворачиваешь мысль: «Сиденья туалетов размещались прямо над проточным потоком. Вода постоянно смывала всё, что падало вниз. К I веку н.э. население Рима выросло до миллиона человек, а Клоака Максима оставалась самой совершенной канализационной системой в мире. Представляете? Две тысячи лет!» Мужчина слушает. Ещё минуту. Потом оборачивается и говорит: «Мужик, заткнись, пожалуйста».',
+    ending: 'КОНЦОВКА. «ЗАТКНУЛИ»',
+    achievement: 'h_zatknuli',
+    choices: []
+  },
+  cloaca_heat: {
+    text: 'Ты переключаешься: «А ещё в Древнем Риме роскошь похода в туалет была доступна лишь избранным — состоятельные патриции отправляли рабов вперед, чтобы те прогревали холодные мраморные сиденья к приходу хозяина». Очередь молчит. Ты продолжаешь. Тогда мужчина оборачивается и говорит: «Мужик, заткнись, пожалуйста». Ты замолкаешь...',
+    ending: 'КОНЦОВКА. «ЗАТКНУЛИ»',
+    achievement: 'h_zatknuli',
+    choices: []
+  }
+};
+
+/* ============================================================
    ЛОГИКА ИГРЫ
    ============================================================ */
 let typeTimer = null;
@@ -1925,7 +1982,8 @@ const charLabels = {
   visitor_f: 'ПОСЕТИТЕЛЬНИЦА',
   glam: 'ГЛАМУРНАЯ ФИФА',
   cleaner: 'УБОРЩИЦА',
-  dog: 'СОБАКА'
+  dog: 'СОБАКА',
+  historian: 'ИСТОРИК'
 };
 
 function startGame(charId) {
@@ -1939,6 +1997,8 @@ function startGame(charId) {
     currentStory = storyCleaner;
   } else if (charId === 'dog') {
     currentStory = storyDog;
+  } else if (charId === 'historian') {
+    currentStory = storyHistorian;
   } else {
     return;
   }
