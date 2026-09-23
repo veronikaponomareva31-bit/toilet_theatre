@@ -240,6 +240,63 @@
   }
   .header-row span:hover { color: var(--accent); }
 
+  /* ============ ТАЙМЕР ============ */
+  #timer-box {
+    display: none;
+    text-align: center;
+    margin-bottom: 18px;
+    padding: 14px;
+    background: #2a0808;
+    border: 3px solid #ff4f4f;
+    box-shadow: 0 0 20px #ff4f4f, 4px 4px 0 var(--shadow);
+    animation: timer-pulse 0.8s infinite;
+  }
+  #timer-box.show {
+    display: block;
+  }
+  #timer-label {
+    color: #ff954f;
+    font-size: 9px;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+    text-shadow: 1px 1px 0 var(--shadow);
+  }
+  #timer-value {
+    color: #ff4f4f;
+    font-size: 32px;
+    text-shadow: 3px 3px 0 var(--shadow);
+  }
+  @keyframes timer-pulse {
+    0%, 100% { box-shadow: 0 0 20px #ff4f4f, 4px 4px 0 var(--shadow); }
+    50% { box-shadow: 0 0 40px #ff4f4f, 0 0 80px #ff4f4f, 4px 4px 0 var(--shadow); }
+  }
+
+  /* ============ ФИКСИРОВАННАЯ КНОПКА "НАЗАД" ============ */
+  .back-fixed {
+    position: fixed;
+    top: 76px;
+    right: 20px;
+    width: auto !important;
+    padding: 12px 18px !important;
+    font-size: 10px;
+    background: var(--panel);
+    border: 3px solid var(--accent);
+    color: var(--accent);
+    box-shadow: 4px 4px 0 var(--shadow);
+    z-index: 100;
+    display: none;
+    margin: 0 !important;
+    text-align: center;
+    cursor: pointer;
+    font-family: 'Press Start 2P', monospace;
+    letter-spacing: 1px;
+  }
+  .back-fixed.show { display: block; }
+  .back-fixed:hover {
+    background: var(--accent);
+    color: var(--panel);
+  }
+
   .ach-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -512,10 +569,19 @@
     #musicBtn { right: 14px; }
     #themeBtn { right: 82px; }
 
+    .back-fixed {
+      top: 84px;
+      right: 14px;
+      padding: 10px 14px !important;
+      font-size: 9px;
+    }
+
+    #timer-value { font-size: 26px; }
+
     body::before { border-width: 5px; }
 
     #ach-toast {
-      top: 84px;
+      top: 150px;
       right: 8px;
       left: 8px;
       max-width: none;
@@ -536,6 +602,7 @@
     .char-complete-wrapper { grid-template-columns: repeat(3, 1fr); }
     .toilet-3d { width: 130px; height: 130px; }
     #toilet-spinner { height: 155px; }
+    #timer-value { font-size: 22px; }
   }
 </style>
 </head>
@@ -543,6 +610,9 @@
 
 <button class="corner-btn" id="themeBtn" onclick="nextTheme()" title="Сменить тему">🎨</button>
 <button class="corner-btn off" id="musicBtn" onclick="toggleMusic()" title="Музыка">🔇</button>
+
+<!-- ФИКСИРОВАННАЯ КНОПКА НАЗАД -->
+<button class="back-fixed" id="backFixed" onclick="backFromFixed()">◄ НАЗАД</button>
 
 <div id="ach-toast">
   <div id="ach-toast-icon">🏆</div>
@@ -581,19 +651,21 @@
   <button onclick="startGame('historian')">6. ИСТОРИК</button>
   <button onclick="startGame('doctor')">7. ВРАЧ</button>
   <button onclick="startGame('crazy')">8. СУМАСШЕДШАЯ</button>
-  <button onclick="showMenu('menu')" style="margin-top:24px;">◄ НАЗАД</button>
 </div>
 
 <div id="achievements">
   <h2>ДОСТИЖЕНИЯ</h2>
   <div id="ach-content"></div>
-  <button onclick="showMenu('menu')" style="margin-top:24px;">◄ НАЗАД</button>
 </div>
 
 <div id="game">
   <div class="header-row">
     <span onclick="showMenu('characters')">◄ ПЕРСОНАЖИ</span>
     <span id="char-label">ПОСЕТИТЕЛЬ</span>
+  </div>
+  <div id="timer-box">
+    <div id="timer-label">⏱ ВРЕМЯ ИДЁТ</div>
+    <div id="timer-value">8</div>
   </div>
   <div id="scene"></div>
   <div id="ending"></div>
@@ -1027,7 +1099,7 @@ function updateCursorStyle(accentHex, lightHex, darkHex) {
   var hand = handSvg(accentHex, darkHex, lightHex);
   var css =
     'body { cursor: url(\'data:image/svg+xml;utf8,' + arrow + '\') 0 0, auto; }\n' +
-    'button, a, span[onclick], .clickable, .corner-btn, #choices button, .header-row span, .dot { cursor: url(\'data:image/svg+xml;utf8,' + hand + '\') 7 0, pointer; }\n';
+    'button, a, span[onclick], .clickable, .corner-btn, #choices button, .header-row span, .dot, .back-fixed { cursor: url(\'data:image/svg+xml;utf8,' + hand + '\') 7 0, pointer; }\n';
   var el = document.getElementById('cursor-style');
   if (!el) {
     el = document.createElement('style');
@@ -1226,7 +1298,8 @@ const achievementGroups = [
       { id: 'v_manager',     icon: '🧑‍💼', label: 'Договорился' },
       { id: 'v_guard',       icon: '💂', label: 'Охрана' },
       { id: 'v_kneel',       icon: '🙏', label: 'На коленях' },
-      { id: 'v_invalid',     icon: '♿', label: 'Туалет для инвалидов' }
+      { id: 'v_invalid',     icon: '♿', label: 'Туалет для инвалидов' },
+      { id: 'v_timeout',     icon: '⏰', label: 'Время вышло' }
     ]
   },
   {
@@ -1329,7 +1402,6 @@ function getAchievementInfo(id) {
   return found;
 }
 
-/* ---- Всплывающее окно ачивки ---- */
 let achToastTimer = null;
 
 function showAchievementToast(icon, label) {
@@ -1466,13 +1538,66 @@ function unlockAchievement(id) {
 /* ============================================================
    НАВИГАЦИЯ
    ============================================================ */
+let lastScreenBeforeFixed = 'menu';
+
 function showMenu(name) {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('characters').style.display = 'none';
   document.getElementById('achievements').style.display = 'none';
   document.getElementById('game').style.display = 'none';
   document.getElementById(name).style.display = 'block';
+
+  var backBtn = document.getElementById('backFixed');
+  if (name === 'characters' || name === 'achievements') {
+    backBtn.classList.add('show');
+    lastScreenBeforeFixed = name;
+  } else {
+    backBtn.classList.remove('show');
+  }
+
   if (name === 'achievements') renderAchievements();
+
+  // Остановить таймер при уходе с игры
+  if (name !== 'game') {
+    stopTimer();
+  }
+}
+
+function backFromFixed() {
+  showMenu('menu');
+}
+
+/* ============================================================
+   ТАЙМЕР
+   ============================================================ */
+let timerInterval = null;
+let timerSecondsLeft = 0;
+
+function startTimer(seconds, onTimeout) {
+  stopTimer();
+  timerSecondsLeft = seconds;
+  var box = document.getElementById('timer-box');
+  var val = document.getElementById('timer-value');
+  box.classList.add('show');
+  val.textContent = timerSecondsLeft;
+
+  timerInterval = setInterval(function() {
+    timerSecondsLeft--;
+    if (timerSecondsLeft <= 0) {
+      stopTimer();
+      onTimeout();
+      return;
+    }
+    val.textContent = timerSecondsLeft;
+  }, 1000);
+}
+
+function stopTimer() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+  document.getElementById('timer-box').classList.remove('show');
 }
 
 /* ============================================================
@@ -1501,12 +1626,21 @@ const storyVisitor = {
       { text: '3. Заглянуть в щель', next: 'm_shel' }
     ]
   },
-  m3: { text: 'Из кабинки раздаётся голос: «Занято, имейте совесть!» Ты слышишь, как внутри кто-то шуршит газетой. Похоже, там обосновались надолго. Терпение на пределе.',
+  m3: {
+    text: 'Из кабинки раздаётся голос: «Занято, имейте совесть!» Ты слышишь, как внутри кто-то шуршит газетой. Похоже, там обосновались надолго. Терпение на пределе.',
+    timer: 8,
+    timeoutNext: 'm_timeout',
     choices: [
       { text: '1. Ждать дальше', next: 'm_wait_end' },
       { text: '2. Развернуться и поискать другой вариант', next: 'p1' },
       { text: '3. Ответить грубо', next: 'm_fight' }
     ]
+  },
+  m_timeout: {
+    text: 'Ты стоишь, думаешь, тянешь время. А время не тянет. Оно бежит. И вот — всё. Ты не успел. Ты обоссался прямо здесь, в очереди, стоя перед закрытой дверью.',
+    ending: 'КОНЦОВКА. «НЕ УСПЕЛ — ОБОССАЛСЯ»',
+    achievement: 'v_timeout',
+    choices: []
   },
   m_fight: { text: 'Дверь резко открывается. Из кабинки выходит мужчина с очень серьёзным лицом. Начинается конфликт. Тебя выводят из туалета. И тут — всё. Ты не добежал.',
     ending: 'КОНЦОВКА. «ОБОССАЛСЯ»', achievement: 'v_obossalsya', choices: [] },
@@ -2249,6 +2383,7 @@ const charLabels = {
 };
 
 function startGame(charId) {
+  stopTimer();
   if (charId === 'visitor') {
     currentStory = storyVisitor;
   } else if (charId === 'visitor_f') {
@@ -2317,6 +2452,7 @@ function finishTyping() {
 }
 
 function showNode(key) {
+  stopTimer();
   const node = currentStory[key];
   if (!node) return;
   if (node.achievement) unlockAchievement(node.achievement);
@@ -2340,6 +2476,12 @@ function showNode(key) {
       btn.onclick = function() { showNode(node.next); };
       choicesEl.appendChild(btn);
       return;
+    }
+    // Таймер запускаем ДО показа выборов, если у узла есть поле timer
+    if (node.timer && node.timeoutNext) {
+      startTimer(node.timer, function() {
+        showNode(node.timeoutNext);
+      });
     }
     node.choices.forEach(function(choice) {
       const btn = document.createElement('button');
