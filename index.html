@@ -31,7 +31,7 @@
     font-family: 'Press Start 2P', 'Courier New', monospace;
     font-size: 12px;
     line-height: 1.8;
-    padding: 90px 20px 30px 20px;
+    padding: 90px 20px 60px 20px;
     max-width: 720px;
     margin: 0 auto;
     transition: background 0.3s ease, color 0.3s ease;
@@ -251,9 +251,7 @@
     box-shadow: 0 0 20px #ff4f4f, 4px 4px 0 var(--shadow);
     animation: timer-pulse 0.8s infinite;
   }
-  #timer-box.show {
-    display: block;
-  }
+  #timer-box.show { display: block; }
   #timer-label {
     color: #ff954f;
     font-size: 9px;
@@ -271,17 +269,18 @@
     50% { box-shadow: 0 0 40px #ff4f4f, 0 0 80px #ff4f4f, 4px 4px 0 var(--shadow); }
   }
 
-  /* ============ ФИКСИРОВАННАЯ КНОПКА "НАЗАД" ============ */
+  /* ============ МАЛЕНЬКАЯ КНОПКА "НАЗАД" СЛЕВА ============ */
   .back-fixed {
     position: fixed;
-    top: 76px;
-    right: 20px;
+    top: 12px;
+    left: 20px;
     width: auto !important;
-    padding: 12px 18px !important;
+    padding: 0 14px !important;
+    height: 56px;
     font-size: 10px;
     background: var(--panel);
-    border: 3px solid var(--accent);
-    color: var(--accent);
+    border: 3px solid var(--border);
+    color: var(--text);
     box-shadow: 4px 4px 0 var(--shadow);
     z-index: 100;
     display: none;
@@ -290,11 +289,28 @@
     cursor: pointer;
     font-family: 'Press Start 2P', monospace;
     letter-spacing: 1px;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
   }
-  .back-fixed.show { display: block; }
+  .back-fixed.show { display: flex; }
   .back-fixed:hover {
-    background: var(--accent);
-    color: var(--panel);
+    border-color: var(--accent);
+    background: var(--panel-hover);
+    color: var(--accent);
+  }
+
+  /* ============ БОЛЬШАЯ КНОПКА "НАЗАД" В КОНЦЕ ============ */
+  .back-bottom {
+    margin-top: 20px;
+    background: var(--panel);
+    color: var(--text);
+    border: 3px solid var(--accent);
+    text-align: center;
+  }
+  .back-bottom:hover {
+    background: var(--panel-hover);
+    color: var(--accent);
   }
 
   .ach-grid {
@@ -510,7 +526,7 @@
   @media (max-width: 600px) {
     body {
       font-size: 16px;
-      padding: 90px 12px 16px 12px;
+      padding: 90px 12px 80px 12px;
       max-width: 100%;
     }
 
@@ -570,10 +586,13 @@
     #themeBtn { right: 82px; }
 
     .back-fixed {
-      top: 84px;
-      right: 14px;
-      padding: 10px 14px !important;
+      top: 12px;
+      left: 14px;
+      height: 60px;
+      padding: 0 12px !important;
       font-size: 9px;
+      border-width: 4px;
+      box-shadow: 5px 5px 0 var(--shadow);
     }
 
     #timer-value { font-size: 26px; }
@@ -581,7 +600,7 @@
     body::before { border-width: 5px; }
 
     #ach-toast {
-      top: 150px;
+      top: 90px;
       right: 8px;
       left: 8px;
       max-width: none;
@@ -603,6 +622,7 @@
     .toilet-3d { width: 130px; height: 130px; }
     #toilet-spinner { height: 155px; }
     #timer-value { font-size: 22px; }
+    .back-fixed { font-size: 8px; padding: 0 10px !important; }
   }
 </style>
 </head>
@@ -611,7 +631,7 @@
 <button class="corner-btn" id="themeBtn" onclick="nextTheme()" title="Сменить тему">🎨</button>
 <button class="corner-btn off" id="musicBtn" onclick="toggleMusic()" title="Музыка">🔇</button>
 
-<!-- ФИКСИРОВАННАЯ КНОПКА НАЗАД -->
+<!-- МАЛЕНЬКАЯ КНОПКА НАЗАД СЛЕВА -->
 <button class="back-fixed" id="backFixed" onclick="backFromFixed()">◄ НАЗАД</button>
 
 <div id="ach-toast">
@@ -650,12 +670,14 @@
   <button onclick="startGame('glam')">5. ГЛАМУРНАЯ ФИФА</button>
   <button onclick="startGame('historian')">6. ИСТОРИК</button>
   <button onclick="startGame('doctor')">7. ВРАЧ</button>
-  <button onclick="startGame('crazy')">8. СУМАСШЕДШАЯ</button>
+  <button onclick="startGame('crazy')">8. СУМАШЕДШАЯ</button>
+  <button class="back-bottom" onclick="showMenu('menu')">◄ НАЗАД</button>
 </div>
 
 <div id="achievements">
   <h2>ДОСТИЖЕНИЯ</h2>
   <div id="ach-content"></div>
+  <button class="back-bottom" onclick="showMenu('menu')">◄ НАЗАД</button>
 </div>
 
 <div id="game">
@@ -670,7 +692,7 @@
   <div id="scene"></div>
   <div id="ending"></div>
   <div id="choices"></div>
-  <button id="to-menu-btn" onclick="showMenu('menu')" style="display:none; margin-top:24px;">◄ НА ГЛАВНЫЙ ЭКРАН</button>
+  <button id="to-menu-btn" class="back-bottom" onclick="showMenu('menu')" style="display:none; margin-top:24px;">◄ НА ГЛАВНЫЙ ЭКРАН</button>
 </div>
 
 <script>
@@ -1538,8 +1560,6 @@ function unlockAchievement(id) {
 /* ============================================================
    НАВИГАЦИЯ
    ============================================================ */
-let lastScreenBeforeFixed = 'menu';
-
 function showMenu(name) {
   document.getElementById('menu').style.display = 'none';
   document.getElementById('characters').style.display = 'none';
@@ -1550,14 +1570,12 @@ function showMenu(name) {
   var backBtn = document.getElementById('backFixed');
   if (name === 'characters' || name === 'achievements') {
     backBtn.classList.add('show');
-    lastScreenBeforeFixed = name;
   } else {
     backBtn.classList.remove('show');
   }
 
   if (name === 'achievements') renderAchievements();
 
-  // Остановить таймер при уходе с игры
   if (name !== 'game') {
     stopTimer();
   }
@@ -2477,7 +2495,6 @@ function showNode(key) {
       choicesEl.appendChild(btn);
       return;
     }
-    // Таймер запускаем ДО показа выборов, если у узла есть поле timer
     if (node.timer && node.timeoutNext) {
       startTimer(node.timer, function() {
         showNode(node.timeoutNext);
